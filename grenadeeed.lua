@@ -108,7 +108,7 @@ script.Parent.Activated:Connect(function()
 end)
 end))
 for i,v in pairs(mas:GetChildren()) do
-	v.Parent = workspace
+	v.Parent = owner.Backpack
 	pcall(function() v:MakeJoints() end)
 end
 mas:Destroy()
