@@ -19,10 +19,7 @@ mas = Instance.new("Model",game:GetService("Lighting"))
 Tool0 = Instance.new("Tool")
 Part1 = Instance.new("Part")
 SpecialMesh2 = Instance.new("SpecialMesh")
-LocalScript3 = Instance.new("LocalScript")
-Folder4 = Instance.new("Folder")
-RemoteEvent5 = Instance.new("RemoteEvent")
-Script6 = Instance.new("Script")
+Script3 = Instance.new("Script")
 Tool0.Name = "Grenade"
 Tool0.Parent = mas
 Part1.Name = "Handle"
@@ -45,27 +42,13 @@ SpecialMesh2.MeshId = "rbxassetid://431532852"
 SpecialMesh2.Scale = Vector3.new(0.0028335859533399343, 0.0023949481546878815, 0.0028335859533399343)
 SpecialMesh2.TextureId = "rbxassetid://431532899"
 SpecialMesh2.MeshType = Enum.MeshType.FileMesh
-LocalScript3.Name = "GrenadeClient"
-LocalScript3.Parent = Tool0
-table.insert(cors,sandbox(LocalScript3,function()
-script.Parent.Activated:Connect(function()
-	print("Activation, firing drop!")
-	script.Parent.Events.Fire:FireServer()
-end)
-end))
-Folder4.Name = "Events"
-Folder4.Parent = Tool0
-RemoteEvent5.Name = "Fire"
-RemoteEvent5.Parent = Folder4
-Script6.Name = "GrenadeServer"
-Script6.Parent = Tool0
-table.insert(cors,sandbox(Script6,function()
-local Events = script.Parent.Events
+Script3.Name = "GrenadeServer"
+Script3.Parent = Tool0
+table.insert(cors,sandbox(Script3,function()
 local MainGrenade = script.Parent.Handle
 local Debris = game:GetService("Debris")
 
-
-Events.Fire.OnServerEvent:Connect(function(plr)
+script.Parent.Activated:Connect(function()
 	local GrenadeClone = MainGrenade:Clone()
 	GrenadeClone.CanCollide = true
 	GrenadeClone.Position = MainGrenade.Position
