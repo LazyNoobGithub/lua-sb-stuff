@@ -1051,7 +1051,7 @@ VehicleSeat88.Size = Vector3.new(2, 0.20000000298023224, 2)
 VehicleSeat88.BrickColor = BrickColor.new("Black")
 VehicleSeat88.TopSurface = Enum.SurfaceType.Smooth
 VehicleSeat88.brickColor = BrickColor.new("Black")
-mas:PivotTo(owner.Character)
+mas:PivotTo(owner.Character:GetPivot())
 for i,v in pairs(mas:GetChildren()) do
 	v.Parent = workspace
 	pcall(function() v:MakeJoints() end)
