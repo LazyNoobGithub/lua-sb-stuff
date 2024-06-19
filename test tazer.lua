@@ -138,7 +138,7 @@ Sound10.Volume = 1.5
 PitchShiftSoundEffect11.Parent = Sound10
 PitchShiftSoundEffect11.Octave = 1.190000057220459
 for i,v in pairs(mas:GetChildren()) do
-	v.Parent = workspace
+	v.Parent = owner.Backpack
 	pcall(function() v:MakeJoints() end)
 end
 mas:Destroy()
