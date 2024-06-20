@@ -179,7 +179,12 @@ function Blow(Hit)
 	end
 	UntagHumanoid(humanoid)
 	TagHumanoid(humanoid, Player)
-	humanoid:TakeDamage(Damage)	
+humanoid.BreakJointsOnDeath = false
+	humanoid:TakeDamage(Damage)
+				
+				if humanoid.Health == 0 then
+					ragdoll(game:GetService("Players"):GetPlayerFromCharacter(humanoid.Parent))
+				end
 end
 
 
