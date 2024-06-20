@@ -52,7 +52,7 @@ NameLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
 NameLabel.Size = UDim2.new(0, 200, 0, 50)
 NameLabel.Font = Enum.Font.SourceSans
 NameLabel.Text = ""
-NameLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+NameLabel.TextColor3 = Color3.fromRGB(85, 0, 255)
 NameLabel.TextSize = 14.000
 
 GetEm.Name = "GetEm"
@@ -65,13 +65,9 @@ GetEm.BorderSizePixel = 2
 GetEm.Position = UDim2.new(0.5, 0, 0.825581372, 0)
 GetEm.Size = UDim2.new(0, 178, 0, 31)
 GetEm.Font = Enum.Font.SourceSans
+GetEm.Text = "Kidnap"
 GetEm.TextColor3 = Color3.fromRGB(85, 0, 255)
 GetEm.TextSize = 14.000
-
--- Scripts:
-
-local function HLJWBN_fake_script() -- MainFrame.GUIManager 
-	local script = Instance.new('Script', MainFrame)
 
 	function kidnap(name)
 		Victim = name
@@ -1485,9 +1481,7 @@ local function HLJWBN_fake_script() -- MainFrame.GUIManager
 		o1:Destroy()
 	end
 	
-	local MainFrame = script.Parent
 	local Button = MainFrame.GetEm
-	local NameLabel = MainFrame.NameLabel
 	
 	MainFrame.Active = true
 	MainFrame.Draggable = true
@@ -1519,5 +1513,3 @@ local function HLJWBN_fake_script() -- MainFrame.GUIManager
 			NameLabel.Text = ""
 		end
 	end)
-end
-coroutine.wrap(HLJWBN_fake_script)()
