@@ -54,6 +54,7 @@ NameLabel.Font = Enum.Font.SourceSans
 NameLabel.Text = ""
 NameLabel.TextColor3 = Color3.fromRGB(85, 0, 255)
 NameLabel.TextSize = 14.000
+spawn(function() NameLabel.Text ="" end)
 
 GetEm.Name = "GetEm"
 GetEm.Parent = MainFrame
@@ -1489,9 +1490,9 @@ GetEm.TextSize = 14.000
 	Button.MouseButton1Down:Connect(function()
 		local plr
 		local yay,nay = pcall(function()
-			plr = game.Players:FindFirstChild(NameLabel.Text)
+			plr = game.Players:FindFirstChild(NameLabel.Text).Name
 		end)
 		if yay then
-			spawn(function() kidnap(plr.Name) end)
+			spawn(function() kidnap(plr) end)
 		end
 	end)
