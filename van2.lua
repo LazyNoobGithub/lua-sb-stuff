@@ -1384,7 +1384,7 @@ char["Right Leg"]:Destroy()
 char["Right Arm"]:Destroy()
 rg.Parent = game.Workspace
 rg.Head.BrickColor = BrickColor.new("Maroon")
-game:GetService("Debris"):AddItem(char,5)
+spawn(function() wait(5) char:Destroy() end)
 function DEATH ()
 	OHHNELLY = Instance.new("Part")
 	OHHNELLY.Parent = workspace
@@ -1400,7 +1400,7 @@ function DEATH ()
 	OHHNELLY.LeftSurface = Enum.SurfaceType.SmoothNoOutlines
 	OHHNELLY.RightSurface = Enum.SurfaceType.SmoothNoOutlines
 	OHHNELLY.TopSurface = Enum.SurfaceType.SmoothNoOutlines
-        game:GetService("Debris"):AddItem(OHNELLY,5)
+        spawn(function() wait(5) OHNELLY:Destroy() end)
 end
 for i=1,20 do
 	DEATH()
