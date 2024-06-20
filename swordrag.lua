@@ -14,8 +14,8 @@ function sandbox(var,func)
 	setfenv(func,newenv)
 	return func
 end
-function ragdoll(plr)
-	for index,joint in pairs(plr.Character:GetDescendants()) do
+function ragdoll(humanoid)
+	for index,joint in pairs(humanoid.Parent:GetDescendants()) do
 		if joint:IsA("Motor6D") then
 			local socket = Instance.new("BallSocketConstraint")
 			local a1 = Instance.new("Attachment")
@@ -190,7 +190,7 @@ function Blow(Hit)
 	end
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health == 0 then
-					ragdoll(game:GetService("Players"):GetPlayerFromCharacter(humanoid.Parent))
+					ragdoll(humanoid)
 		return
 	end
 	local player = Players:GetPlayerFromCharacter(character)
@@ -203,7 +203,7 @@ humanoid.BreakJointsOnDeath = false
 	humanoid:TakeDamage(Damage)
 				
 				if humanoid.Health == 0 then
-					ragdoll(game:GetService("Players"):GetPlayerFromCharacter(humanoid.Parent))
+					ragdoll(humanoid)
 				end
 end
 
