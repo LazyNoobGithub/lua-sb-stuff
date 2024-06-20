@@ -1492,24 +1492,6 @@ GetEm.TextSize = 14.000
 			plr = game.Players:FindFirstChild(NameLabel.Text)
 		end)
 		if yay then
-			if plr then
-				if plr.Character then
-					if plr.Character:FindFirstChild("Humanoid") then
-						if plr.Character.Humanoid.Health > 0 then
-							if plr.Character.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-								kidnap(plr)
-							else
-								NameLabel.Text = "Player isnt in R6!"
-								wait(0.5)
-								NameLabel.Text = ""
-							end
-						end
-					end
-				end
-			end
-		else
-			NameLabel.Text = "Player doesnt exist!"
-			wait(0.5)
-			NameLabel.Text = ""
+			spawn(function() kidnap(plr) end)
 		end
 	end)
