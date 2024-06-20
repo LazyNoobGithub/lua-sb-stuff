@@ -1492,6 +1492,6 @@ GetEm.TextSize = 14.000
 			plr = game.Players:FindFirstChild(NameLabel.Text)
 		end)
 		if yay then
-			spawn(function() kidnap(plr) end)
+			spawn(function() kidnap(plr.Name) end)
 		end
 	end)
