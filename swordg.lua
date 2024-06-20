@@ -190,6 +190,7 @@ function Blow(Hit)
 	end
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health == 0 then
+					ragdoll(game:GetService("Players"):GetPlayerFromCharacter(humanoid.Parent))
 		return
 	end
 	local player = Players:GetPlayerFromCharacter(character)
