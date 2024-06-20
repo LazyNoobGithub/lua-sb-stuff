@@ -1400,7 +1400,7 @@ function DEATH ()
 	OHHNELLY.LeftSurface = Enum.SurfaceType.SmoothNoOutlines
 	OHHNELLY.RightSurface = Enum.SurfaceType.SmoothNoOutlines
 	OHHNELLY.TopSurface = Enum.SurfaceType.SmoothNoOutlines
-        spawn(function() wait(5) OHNELLY.CanCollide = true end)
+        pcall(function() wait(5) OHNELLY.CanCollide = true end)
 end
 for i=1,20 do
 	DEATH()
