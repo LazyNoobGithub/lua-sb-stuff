@@ -1386,7 +1386,7 @@ rg.Parent = game.Workspace
 rg.Head.BrickColor = BrickColor.new("Maroon")
 spawn(function() wait(5) rg:Destroy() end)
 function DEATH ()
-	OHHNELLY = Instance.new("Part")
+	local OHHNELLY = Instance.new("Part")
 	OHHNELLY.Parent = workspace
 	OHHNELLY.Anchored = false
 	OHHNELLY.Material = Enum.Material.SmoothPlastic
@@ -1400,7 +1400,7 @@ function DEATH ()
 	OHHNELLY.LeftSurface = Enum.SurfaceType.SmoothNoOutlines
 	OHHNELLY.RightSurface = Enum.SurfaceType.SmoothNoOutlines
 	OHHNELLY.TopSurface = Enum.SurfaceType.SmoothNoOutlines
-        spawn(function() wait(5) OHNELLY.CanCollide = false end)
+        spawn(function() wait(5) OHNELLY:Destroy() end)
 end
 for i=1,20 do
 	DEATH()
