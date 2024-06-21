@@ -198,8 +198,8 @@ local canslam = true
 local DebounceFallin = false
 local DebounceState,DebounceHit,DebounceKey,EctDebounce = false,false,false,false
 pcall(function() hed['Running']:Destroy() end)
-local lRS = game["Run Service"].RenderStepped
-local sRS = game["Run Service"].Stepped or game["Run Service"].Heartbeat
+local lRS = game["RunService"].RenderStepped
+local sRS = game["RunService"].Stepped or game["RunService"].Heartbeat
 local lrs,rs = lRS,sRS
 local ds,dh,dk,ed = DebounceState,DebounceHit,DebounceKey,EctDebounce
 local DBP = false
