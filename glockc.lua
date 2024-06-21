@@ -142,6 +142,26 @@ do
     game,owner = g,g.Players.LocalPlayer
 end--// Vortex Gauntlets created by SavageMunkey
 
+local function ragdoll(humanoid)
+	for index,joint in pairs(humanoid.Parent:GetDescendants()) do
+		if joint:IsA("Motor6D") then
+			local socket = Instance.new("BallSocketConstraint")
+			local a1 = Instance.new("Attachment")
+			local a2 = Instance.new("Attachment")
+			a1.Parent = joint.Part0
+			a2.Parent = joint.Part1
+			socket.Parent = joint.Parent
+			socket.Attachment0 = a1
+			socket.Attachment1 = a2
+			a1.CFrame = joint.C0
+			a2.CFrame = joint.C1
+			socket.LimitsEnabled = true
+			socket.TwistLimitsEnabled = true
+			joint:Destroy()
+		end
+	end
+end
+
 local Scale = game.Players.LocalPlayer.Character.Torso.Size.X/2*(game.Players.LocalPlayer.Character.Torso:FindFirstChild("ScaleInserted") ~= nil and game.Players.LocalPlayer.Character.Torso:FindFirstChild("ScaleInserted").Scale.Z or 1)*0.8
 local Speed = 20*Scale
 local Gravity = 0.1
@@ -658,6 +678,8 @@ function ShootBullet(Target,barrel)
 		if Hit ~= nil then
 			local Hum = Hit.Parent:FindFirstChild("Humanoid") or Hit.Parent.Parent:FindFirstChild("Humanoid") or (Hit.Parent.Parent.Parent ~= nil and Hit.Parent.Parent.Parent:FindFirstChild("Humanoid"))
 			if Hum ~= nil then
+				owner.Character.Humanoid.BreakJointsOnDeath = false
+				ragdoll(owner.Character.Humanoid)
 				Hum:TakeDamage((((Gangster and math.random(99999,99999) or math.random(99999,99999))*Scale)/100)*Hum.MaxHealth)
 			end
 			break
