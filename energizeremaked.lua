@@ -739,7 +739,7 @@ end
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://35154961"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local HeadThrowACTIVE = false
 HeadThrow.MouseButton1Click:connect(function()
 	HeadThrowACTIVE = not HeadThrowACTIVE
@@ -760,7 +760,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://121572214"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local FloatingHeadACTIVE = false
 FloatingHead.MouseButton1Click:connect(function()
 	FloatingHeadACTIVE = not FloatingHeadACTIVE
@@ -775,7 +775,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://182724289"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local CrouchACTIVE = false
 Crouch.MouseButton1Click:connect(function()
 	CrouchACTIVE = not CrouchACTIVE
@@ -790,7 +790,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://282574440"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local FloorCrawlACTIVE = false
 FloorCrawl.MouseButton1Click:connect(function()
 	FloorCrawlACTIVE = not FloorCrawlACTIVE
@@ -805,7 +805,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://204328711"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local DinoWalkACTIVE = false
 DinoWalk.MouseButton1Click:connect(function()
 	DinoWalkACTIVE = not DinoWalkACTIVE
@@ -820,7 +820,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://429681631"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local JumpingJacksACTIVE = false
 JumpingJacks.MouseButton1Click:connect(function()
 	JumpingJacksACTIVE = not JumpingJacksACTIVE
@@ -835,7 +835,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://35154961"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local LoopHeadACTIVE = false
 LoopHead.MouseButton1Click:connect(function()
 	LoopHeadACTIVE = not LoopHeadACTIVE
@@ -856,7 +856,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://184574340"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local HeroJumpACTIVE = false
 HeroJump.MouseButton1Click:connect(function()
 	HeroJumpACTIVE = not HeroJumpACTIVE
@@ -877,7 +877,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://181526230"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local FaintACTIVE = false
 Faint.MouseButton1Click:connect(function()
 	FaintACTIVE = not FaintACTIVE
@@ -892,7 +892,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://181525546"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local FloorFaintACTIVE = false
 FloorFaint.MouseButton1Click:connect(function()
 	FloorFaintACTIVE = not FloorFaintACTIVE
@@ -913,7 +913,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://181525546"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local SuperFaintACTIVE = false
 SuperFaint.MouseButton1Click:connect(function()
 	SuperFaintACTIVE = not SuperFaintACTIVE
@@ -934,7 +934,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://313762630"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local LevitateACTIVE = false
 Levitate.MouseButton1Click:connect(function()
 	LevitateACTIVE = not LevitateACTIVE
@@ -949,7 +949,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://183412246"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local DabACTIVE = false
 Dab.MouseButton1Click:connect(function()
 	DabACTIVE = not DabACTIVE
@@ -970,7 +970,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://188632011"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local SpinACTIVE = false
 Spinner.MouseButton1Click:connect(function()
 	SpinACTIVE = not SpinACTIVE
@@ -991,7 +991,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://179224234"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local FloatSitACTIVE = false
 FloatSit.MouseButton1Click:connect(function()
 	FloatSitACTIVE = not FloatSitACTIVE
@@ -1006,7 +1006,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://429703734"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local MovingDanceACTIVE = false
 MovingDance.MouseButton1Click:connect(function()
 	MovingDanceACTIVE = not MovingDanceACTIVE
@@ -1027,7 +1027,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://215384594"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local WeirdMoveACTIVE = false
 WeirdMove.MouseButton1Click:connect(function()
 	WeirdMoveACTIVE = not WeirdMoveACTIVE
@@ -1042,7 +1042,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://215384594"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local CloneIllusionACTIVE = false
 CloneIllusion.MouseButton1Click:connect(function()
 	CloneIllusionACTIVE = not CloneIllusionACTIVE
@@ -1057,7 +1057,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://313762630"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local GlitchLevitateACTIVE = false
 GlitchLevitate.MouseButton1Click:connect(function()
 	GlitchLevitateACTIVE = not GlitchLevitateACTIVE
@@ -1072,7 +1072,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://429730430"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local SpinDanceACTIVE = false
 SpinDance.MouseButton1Click:connect(function()
 	SpinDanceACTIVE = not SpinDanceACTIVE
@@ -1093,7 +1093,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://45834924"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local MoonDanceACTIVE = false
 MoonDance.MouseButton1Click:connect(function()
 	MoonDanceACTIVE = not MoonDanceACTIVE
@@ -1114,7 +1114,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://204062532"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local FullPunchACTIVE = false
 FullPunch.MouseButton1Click:connect(function()
 	FullPunchACTIVE = not FullPunchACTIVE
@@ -1135,7 +1135,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://186934910"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local SpinDance2ACTIVE = false
 SpinDance2.MouseButton1Click:connect(function()
 	SpinDance2ACTIVE = not SpinDance2ACTIVE
@@ -1156,7 +1156,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://204292303"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local BowDownACTIVE = false
 BowDown.MouseButton1Click:connect(function()
 	BowDownACTIVE = not BowDownACTIVE
@@ -1177,7 +1177,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://204295235"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local SwordSlamACTIVE = false
 SwordSlam.MouseButton1Click:connect(function()
 	SwordSlamACTIVE = not SwordSlamACTIVE
@@ -1198,7 +1198,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://204295235"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local LoopSlamACTIVE = false
 LoopSlam.MouseButton1Click:connect(function()
 	LoopSlamACTIVE = not LoopSlamACTIVE
@@ -1219,7 +1219,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://184574340"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local MegaInsaneACTIVE = false
 MegaInsane.MouseButton1Click:connect(function()
 	MegaInsaneACTIVE = not MegaInsaneACTIVE
@@ -1240,7 +1240,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://126753849"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local SuperPunchACTIVE = false
 SuperPunch.MouseButton1Click:connect(function()
 	SuperPunchACTIVE = not SuperPunchACTIVE
@@ -1261,7 +1261,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://218504594"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local FullSwingACTIVE = false
 FullSwing.MouseButton1Click:connect(function()
 	FullSwingACTIVE = not FullSwingACTIVE
@@ -1282,7 +1282,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://259438880"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local ArmTurbineACTIVE = false
 ArmTurbine.MouseButton1Click:connect(function()
 	ArmTurbineACTIVE = not ArmTurbineACTIVE
@@ -1297,7 +1297,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://136801964"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local BarrelRollACTIVE = false
 BarrelRoll.MouseButton1Click:connect(function()
 	BarrelRollACTIVE = not BarrelRollACTIVE
@@ -1318,7 +1318,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://180612465"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local ScaredACTIVE = false
 Scared.MouseButton1Click:connect(function()
 	ScaredACTIVE = not ScaredACTIVE
@@ -1339,7 +1339,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://33796059"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local InsaneACTIVE = false
 Insane.MouseButton1Click:connect(function()
 	InsaneACTIVE = not InsaneACTIVE
@@ -1354,7 +1354,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://33169583"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local ArmDetachACTIVE = false
 ArmDetach.MouseButton1Click:connect(function()
 	ArmDetachACTIVE = not ArmDetachACTIVE
@@ -1375,7 +1375,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://35978879"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local SwordSliceACTIVE = false
 SwordSlice.MouseButton1Click:connect(function()
 	SwordSliceACTIVE = not SwordSliceACTIVE
@@ -1390,7 +1390,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://27432691"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local InsaneArmsACTIVE = false
 InsaneArms.MouseButton1Click:connect(function()
 	InsaneArmsACTIVE = not InsaneArmsACTIVE
@@ -1411,7 +1411,7 @@ end)
 -- R15
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://674871189"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local CrazySlashACTIVE = false
 CrazySlash.MouseButton1Click:connect(function()
 	CrazySlashACTIVE = not CrazySlashACTIVE
@@ -1432,7 +1432,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://582855105"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local OpenACTIVE = false
 Open.MouseButton1Click:connect(function()
 	OpenACTIVE = not OpenACTIVE
@@ -1453,7 +1453,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://754658275"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local R15SpinnerACTIVE = false
 R15Spinner.MouseButton1Click:connect(function()
 	R15SpinnerACTIVE = not R15SpinnerACTIVE
@@ -1474,7 +1474,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://582384156"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local ArmsOutACTIVE = false
 ArmsOut.MouseButton1Click:connect(function()
 	ArmsOutACTIVE = not ArmsOutACTIVE
@@ -1495,7 +1495,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://717879555"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 local FloatSlashACTIVE = false
 FloatSlash.MouseButton1Click:connect(function()
 	FloatSlashACTIVE = not FloatSlashACTIVE
@@ -1516,7 +1516,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://708553116"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 WeirdZombieACTIVE = false
 WeirdZombie.MouseButton1Click:connect(function()
 	WeirdZombieACTIVE = not WeirdZombieACTIVE
@@ -1537,7 +1537,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://746398327"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 DownSlashACTIVE = false
 DownSlash.MouseButton1Click:connect(function()
 	DownSlashACTIVE = not DownSlashACTIVE
@@ -1558,7 +1558,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://675025795"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 PullACTIVE = false
 Pull.MouseButton1Click:connect(function()
 	PullACTIVE = not PullACTIVE
@@ -1579,7 +1579,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://698251653"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 CircleArmACTIVE = false
 CircleArm.MouseButton1Click:connect(function()
 	CircleArmACTIVE = not CircleArmACTIVE
@@ -1600,7 +1600,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://696096087"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 BendACTIVE = false
 Bend.MouseButton1Click:connect(function()
 	BendACTIVE = not BendACTIVE
@@ -1621,7 +1621,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://675025570"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 RotateSlashACTIVE = false
 RotateSlash.MouseButton1Click:connect(function()
 	RotateSlashACTIVE = not RotateSlashACTIVE
@@ -1642,7 +1642,7 @@ end)
 
 local Anim = Instance.new("Animation")
 Anim.AnimationId = "rbxassetid://754656200"
-local track = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+local track = owner.Character.Humanoid:LoadAnimation(Anim)
 FlingArmsACTIVE = false
 FlingArms.MouseButton1Click:connect(function()
 	FlingArmsACTIVE = not FlingArmsACTIVE
