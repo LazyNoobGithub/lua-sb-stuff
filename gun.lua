@@ -980,10 +980,10 @@ end
 if(hit.Parent:findFirstChild("Humanoid")~= nil)then 
 if hit.Parent:FindFirstChild("Humanoid") ~= nil and hit.Name ~= "Base" and hit.Parent.Name ~= Player.Name then 
 	hit.Parent.Humanoid.BreakJointsOnDeath = false
+	if hit.Parent.Humanoid.Health == 0 then
+		ragdoll(hit.Parent.Humanoid)
+	end
 hit.Parent.Humanoid:TakeDamage(Dmg) 
-if hit.Parent.Humanoid.Health == 0 then
-	ragdoll(hit.Parent.Humanoid)
-end
 
 end 
 end 
