@@ -166,7 +166,7 @@ K = Runnin' in the 90's
 --Converted By Egg Republic
 
 Player=game:GetService("Players").LocalPlayer
-Character=workspace.Rig
+Character=Player.Character
 hum = Character.Humanoid
 LeftArm=Character["Left Arm"]
 LeftLeg=Character["Left Leg"]
