@@ -1,964 +1,1139 @@
+if game:GetService("RunService"):IsClient() then error("Script must be server-side in order to work; use h/ and not hl/") end
+local Player,game,owner = owner,game
+local RealPlayer = Player
+do
+    print("FE Compatibility code by Mokiros")
+    local rp = RealPlayer
+    script.Parent = rp.Character
+   
+    --RemoteEvent for communicating
+    local Event = Instance.new("RemoteEvent")
+    Event.Name = "UserInput_Event"
+ 
+    --Fake event to make stuff like Mouse.KeyDown work
+    local function fakeEvent()
+        local t = {_fakeEvent=true,Functions={},Connect=function(self,f)table.insert(self.Functions,f) end}
+        t.connect = t.Connect
+        return t
+    end
+ 
+    --Creating fake input objects with fake variables
+    local m = {Target=nil,Hit=CFrame.new(),KeyUp=fakeEvent(),KeyDown=fakeEvent(),Button1Up=fakeEvent(),Button1Down=fakeEvent()}
+    local UIS = {InputBegan=fakeEvent(),InputEnded=fakeEvent()}
+    local CAS = {Actions={},BindAction=function(self,name,fun,touch,...)
+        CAS.Actions[name] = fun and {Name=name,Function=fun,Keys={...}} or nil
+    end}
+    --Merged 2 functions into one by checking amount of arguments
+    CAS.UnbindAction = CAS.BindAction
+ 
+    --This function will trigger the events that have been :Connect()'ed
+    local function te(self,ev,...)
+        local t = m[ev]
+        if t and t._fakeEvent then
+            for _,f in pairs(t.Functions) do
+                f(...)
+            end
+        end
+    end
+    m.TrigEvent = te
+    UIS.TrigEvent = te
+ 
+    Event.OnServerEvent:Connect(function(plr,io)
+        if plr~=rp then return end
+        m.Target = io.Target
+        m.Hit = io.Hit
+        if not io.isMouse then
+            local b = io.UserInputState == Enum.UserInputState.Begin
+            if io.UserInputType == Enum.UserInputType.MouseButton1 then
+                return m:TrigEvent(b and "Button1Down" or "Button1Up")
+            end
+            for _,t in pairs(CAS.Actions) do
+                for _,k in pairs(t.Keys) do
+                    if k==io.KeyCode then
+                        t.Function(t.Name,io.UserInputState,io)
+                    end
+                end
+            end
+            m:TrigEvent(b and "KeyDown" or "KeyUp",io.KeyCode.Name:lower())
+            UIS:TrigEvent(b and "InputBegan" or "InputEnded",io,false)
+        end
+    end)
+    Event.Parent = NLS([==[
+    local Player = game:GetService("Players").LocalPlayer
+    local Event = script:WaitForChild("UserInput_Event")
+ 
+    local Mouse = Player:GetMouse()
+    local UIS = game:GetService("UserInputService")
+    local input = function(io,a)
+        if a then return end
+        --Since InputObject is a client-side instance, we create and pass table instead
+        Event:FireServer({KeyCode=io.KeyCode,UserInputType=io.UserInputType,UserInputState=io.UserInputState,Hit=Mouse.Hit,Target=Mouse.Target})
+    end
+    UIS.InputBegan:Connect(input)
+    UIS.InputEnded:Connect(input)
+ 
+    local h,t
+    --Give the server mouse data 30 times every second, but only if the values changed
+    --If player is not moving their mouse, client won't fire events
+    while wait(1/30) do
+        if h~=Mouse.Hit or t~=Mouse.Target then
+            h,t=Mouse.Hit,Mouse.Target
+            Event:FireServer({isMouse=true,Target=t,Hit=h})
+        end
+    end]==],Player.Character)
+ 
+    ----Sandboxed game object that allows the usage of client-side methods and services
+    --Real game object
+    local _rg = game
+ 
+    --Metatable for fake service
+    local fsmt = {
+        __index = function(self,k)
+            local s = rawget(self,"_RealService")
+            if s then return s[k] end
+        end,
+        __newindex = function(self,k,v)
+            local s = rawget(self,"_RealService")
+            if s then s[k]=v end
+        end,
+        __call = function(self,...)
+            local s = rawget(self,"_RealService")
+            if s then return s(...) end
+        end
+    }
+    local function FakeService(t,RealService)
+        t._RealService = typeof(RealService)=="string" and _rg:GetService(RealService) or RealService
+        return setmetatable(t,fsmt)
+    end
+ 
+    --Fake game object
+    local g = {
+        GetService = function(self,s)
+            return self[s]
+        end,
+        Players = FakeService({
+            LocalPlayer = FakeService({GetMouse=function(self)return m end},Player)
+        },"Players"),
+        UserInputService = FakeService(UIS,"UserInputService"),
+        ContextActionService = FakeService(CAS,"ContextActionService"),
+    }
+    rawset(g.Players,"localPlayer",g.Players.LocalPlayer)
+    g.service = g.GetService
+   
+    g.RunService = FakeService({
+        RenderStepped = _rg:GetService("RunService").Heartbeat,
+        BindToRenderStep = function(self,name,_,fun)
+            self._btrs[name] = self.Heartbeat:Connect(fun)
+        end,
+        UnbindFromRenderStep = function(self,name)
+            self._btrs[name]:Disconnect()
+        end,
+    },"RunService")
+ 
+    setmetatable(g,{
+        __index=function(self,s)
+            return _rg:GetService(s) or typeof(_rg[s])=="function"
+            and function(_,...)return _rg[s](_rg,...)end or _rg[s]
+        end,
+        __newindex = fsmt.__newindex,
+        __call = fsmt.__call
+    })
+    --Changing owner to fake player object to support owner:GetMouse()
+    game,owner = g,g.Players.LocalPlayer
+end--// Vortex Gauntlets created by SavageMunkey
 
---Converted with ttyyuu12345's model to script plugin v4
-function sandbox(var,func)
-	local env = getfenv(func)
-	local newenv = setmetatable({},{
-		__index = function(self,k)
-			if k=="script" then
-				return var
-			else
-				return env[k]
-			end
-		end,
-	})
-	setfenv(func,newenv)
-	return func
+local function ragdoll(humanoid)
+	for index,joint in pairs(humanoid.Parent:GetDescendants()) do
+		if joint:IsA("Motor6D") then
+			local socket = Instance.new("BallSocketConstraint")
+			local a1 = Instance.new("Attachment")
+			local a2 = Instance.new("Attachment")
+			a1.Parent = joint.Part0
+			a2.Parent = joint.Part1
+			socket.Parent = joint.Parent
+			socket.Attachment0 = a1
+			socket.Attachment1 = a2
+			a1.CFrame = joint.C0
+			a2.CFrame = joint.C1
+			socket.LimitsEnabled = true
+			socket.TwistLimitsEnabled = true
+			joint:Destroy()
+		end
+	end
 end
-cors = {}
-mas = Instance.new("Model",game:GetService("Lighting"))
-Tool0 = Instance.new("Tool")
-Animation1 = Instance.new("Animation")
-Animation2 = Instance.new("Animation")
-Animation3 = Instance.new("Animation")
-Animation4 = Instance.new("Animation")
-Animation5 = Instance.new("Animation")
-Animation6 = Instance.new("Animation")
-Animation7 = Instance.new("Animation")
-Animation8 = Instance.new("Animation")
-ScreenGui9 = Instance.new("ScreenGui")
-Frame10 = Instance.new("Frame")
-TextLabel11 = Instance.new("TextLabel")
-TextLabel12 = Instance.new("TextLabel")
-TextLabel13 = Instance.new("TextLabel")
-ImageLabel14 = Instance.new("ImageLabel")
-Frame15 = Instance.new("Frame")
-Frame16 = Instance.new("Frame")
-Frame17 = Instance.new("Frame")
-Frame18 = Instance.new("Frame")
-ImageLabel19 = Instance.new("ImageLabel")
-TextLabel20 = Instance.new("TextLabel")
-Frame21 = Instance.new("Frame")
-Sound22 = Instance.new("Sound")
-ScreenGui23 = Instance.new("ScreenGui")
-ImageButton24 = Instance.new("ImageButton")
-LocalScript25 = Instance.new("LocalScript")
-Sound26 = Instance.new("Sound")
-Part27 = Instance.new("Part")
-SpecialMesh28 = Instance.new("SpecialMesh")
-Part29 = Instance.new("Part")
-BlockMesh30 = Instance.new("BlockMesh")
-Sound31 = Instance.new("Sound")
-Sound32 = Instance.new("Sound")
-Sound33 = Instance.new("Sound")
-Sound34 = Instance.new("Sound")
-Sound35 = Instance.new("Sound")
-Sound36 = Instance.new("Sound")
-PointLight37 = Instance.new("PointLight")
-Smoke38 = Instance.new("Smoke")
-Part39 = Instance.new("Part")
-SpecialMesh40 = Instance.new("SpecialMesh")
-BillboardGui41 = Instance.new("BillboardGui")
-ImageLabel42 = Instance.new("ImageLabel")
-Script43 = Instance.new("Script")
-LocalScript44 = Instance.new("LocalScript")
-LocalScript45 = Instance.new("LocalScript")
-LocalScript46 = Instance.new("LocalScript")
-Animation47 = Instance.new("Animation")
-Animation48 = Instance.new("Animation")
-Tool0.Name = "M4A1"
-Tool0.Parent = mas
-Tool0.Grip = CFrame.new(0, -0.200000003, 0.200000003, 0.951153278, -0, 0.308719009, 0, 1, 0, -0.308719009, 0, 0.951153278)
-Tool0.GripForward = Vector3.new(-0.3087190091609955, -0, -0.9511532783508301)
-Tool0.GripPos = Vector3.new(0, -0.20000000298023224, 0.20000000298023224)
-Tool0.GripRight = Vector3.new(0.9511532783508301, 0, -0.3087190091609955)
-Animation1.Name = "SlashAnim2"
-Animation1.Parent = Tool0
-Animation1.AnimationId = "rbxassetid://0"
-Animation2.Name = "Recoil"
-Animation2.Parent = Tool0
-Animation2.AnimationId = "rbxassetid://0"
-Animation3.Name = "OverheadAnim2"
-Animation3.Parent = Tool0
-Animation3.AnimationId = "rbxassetid://0"
-Animation4.Name = "Crouch"
-Animation4.Parent = Tool0
-Animation4.AnimationId = "http://www.roblox.com/asset?id=182724289"
-Animation5.Name = "UnequipAnim2"
-Animation5.Parent = Tool0
-Animation5.AnimationId = "rbxassetid://0"
-Animation6.Name = "IdleAnim3"
-Animation6.Parent = Tool0
-Animation6.AnimationId = "rbxassetid://582572859"
-Animation7.Name = "ThrustAnim2"
-Animation7.Parent = Tool0
-Animation7.AnimationId = "rbxassetid://0"
-Animation8.Name = "EquipAnim5"
-Animation8.Parent = Tool0
-Animation8.AnimationId = "rbxassetid://0"
-ScreenGui9.Name = "WeaponHud"
-ScreenGui9.Parent = Tool0
-Frame10.Name = "AmmoHud"
-Frame10.Parent = ScreenGui9
-Frame10.Position = UDim2.new(1, -265, 1, -60)
-Frame10.Size = UDim2.new(0, 200, 0, 50)
-Frame10.BackgroundTransparency = 1
-Frame10.BorderSizePixel = 0
-TextLabel11.Name = "ForwardSlash"
-TextLabel11.Parent = Frame10
-TextLabel11.Position = UDim2.new(0.5, 0, 0.5, 0)
-TextLabel11.BackgroundTransparency = 1
-TextLabel11.BorderSizePixel = 0
-TextLabel11.Font = Enum.Font.SourceSans
-TextLabel11.FontSize = Enum.FontSize.Size24
-TextLabel11.Text = "/"
-TextLabel11.TextColor = BrickColor.new("Institutional white")
-TextLabel11.TextColor3 = Color3.new(1, 1, 1)
-TextLabel11.TextScaled = true
-TextLabel11.TextSize = 24
-TextLabel11.TextStrokeTransparency = 0
-TextLabel11.TextWrap = true
-TextLabel11.TextWrapped = true
-TextLabel12.Name = "ClipAmmo"
-TextLabel12.Parent = Frame10
-TextLabel12.Position = UDim2.new(0.449999988, 0, 0.5, 0)
-TextLabel12.BackgroundTransparency = 1
-TextLabel12.BorderSizePixel = 0
-TextLabel12.Font = Enum.Font.SourceSansBold
-TextLabel12.FontSize = Enum.FontSize.Size24
-TextLabel12.Text = "54"
-TextLabel12.TextColor = BrickColor.new("Institutional white")
-TextLabel12.TextColor3 = Color3.new(1, 1, 1)
-TextLabel12.TextScaled = true
-TextLabel12.TextSize = 24
-TextLabel12.TextStrokeTransparency = 0
-TextLabel12.TextWrap = true
-TextLabel12.TextWrapped = true
-TextLabel12.TextXAlignment = Enum.TextXAlignment.Right
-TextLabel13.Name = "TotalAmmo"
-TextLabel13.Parent = Frame10
-TextLabel13.Position = UDim2.new(0.550000012, 0, 0.5, 0)
-TextLabel13.BackgroundTransparency = 1
-TextLabel13.BorderSizePixel = 0
-TextLabel13.Font = Enum.Font.SourceSans
-TextLabel13.FontSize = Enum.FontSize.Size24
-TextLabel13.Text = "180"
-TextLabel13.TextColor = BrickColor.new("Institutional white")
-TextLabel13.TextColor3 = Color3.new(1, 1, 1)
-TextLabel13.TextScaled = true
-TextLabel13.TextSize = 24
-TextLabel13.TextStrokeTransparency = 0
-TextLabel13.TextWrap = true
-TextLabel13.TextWrapped = true
-TextLabel13.TextXAlignment = Enum.TextXAlignment.Left
-ImageLabel14.Parent = Frame10
-ImageLabel14.Size = UDim2.new(0, 200, 0, 50)
-ImageLabel14.BackgroundColor = BrickColor.new("Institutional white")
-ImageLabel14.BackgroundColor3 = Color3.new(1, 1, 1)
-ImageLabel14.BackgroundTransparency = 1
-ImageLabel14.BorderColor = BrickColor.new("Really black")
-ImageLabel14.BorderColor3 = Color3.new(0, 0, 0)
-ImageLabel14.BorderSizePixel = 0
-ImageLabel14.Image = "rbxassetid://51219827"
-ImageLabel14.ImageColor3 = Color3.new(0.352941, 0.352941, 0.352941)
-ImageLabel14.ImageTransparency = 0.20000000298023224
-Frame15.Name = "Crosshair"
-Frame15.Parent = ScreenGui9
-Frame15.Position = UDim2.new(0, 500, 0, 500)
-Frame15.Size = UDim2.new(0, 150, 0, 150)
-Frame15.BackgroundColor = BrickColor.new("Lime green")
-Frame15.BackgroundColor3 = Color3.new(0, 1, 0)
-Frame15.BackgroundTransparency = 1
-Frame15.BorderSizePixel = 0
-Frame16.Name = "TopFrame"
-Frame16.Parent = Frame15
-Frame16.Position = UDim2.new(0, -1, -0.5, -7)
-Frame16.Size = UDim2.new(0, 2, 0, 14)
-Frame16.BackgroundColor = BrickColor.new("Really black")
-Frame16.BackgroundColor3 = Color3.new(0, 0, 0)
-Frame16.BorderColor = BrickColor.new("Institutional white")
-Frame16.BorderColor3 = Color3.new(1, 1, 1)
-Frame17.Name = "RightFrame"
-Frame17.Parent = Frame15
-Frame17.Position = UDim2.new(0.5, -7, 0, -1)
-Frame17.Size = UDim2.new(0, 14, 0, 2)
-Frame17.BackgroundColor = BrickColor.new("Really black")
-Frame17.BackgroundColor3 = Color3.new(0, 0, 0)
-Frame17.BorderColor = BrickColor.new("Institutional white")
-Frame17.BorderColor3 = Color3.new(1, 1, 1)
-Frame18.Name = "LeftFrame"
-Frame18.Parent = Frame15
-Frame18.Position = UDim2.new(-0.5, -7, 0, -1)
-Frame18.Size = UDim2.new(0, 14, 0, 2)
-Frame18.BackgroundColor = BrickColor.new("Really black")
-Frame18.BackgroundColor3 = Color3.new(0, 0, 0)
-Frame18.BorderColor = BrickColor.new("Institutional white")
-Frame18.BorderColor3 = Color3.new(1, 1, 1)
-ImageLabel19.Name = "TargetHitImage"
-ImageLabel19.Parent = Frame15
-ImageLabel19.Position = UDim2.new(0, -25, 0, -25)
-ImageLabel19.Visible = false
-ImageLabel19.Size = UDim2.new(0, 50, 0, 50)
-ImageLabel19.BackgroundTransparency = 1
-ImageLabel19.BorderSizePixel = 0
-ImageLabel19.Image = "http://www.roblox.com/asset/?id=115400215"
-TextLabel20.Name = "ReloadingLabel"
-TextLabel20.Parent = Frame15
-TextLabel20.Position = UDim2.new(0, 20, 0, -20)
-TextLabel20.Visible = false
-TextLabel20.BackgroundTransparency = 1
-TextLabel20.BorderSizePixel = 0
-TextLabel20.Font = Enum.Font.ArialBold
-TextLabel20.FontSize = Enum.FontSize.Size18
-TextLabel20.Text = "Reloading"
-TextLabel20.TextColor = BrickColor.new("Crimson")
-TextLabel20.TextColor3 = Color3.new(0.568627, 0, 0)
-TextLabel20.TextSize = 18
-TextLabel20.TextStrokeTransparency = 0
-TextLabel20.TextXAlignment = Enum.TextXAlignment.Left
-TextLabel20.TextYAlignment = Enum.TextYAlignment.Bottom
-Frame21.Name = "BottomFrame"
-Frame21.Parent = Frame15
-Frame21.Position = UDim2.new(0, -1, 0.5, -7)
-Frame21.Size = UDim2.new(0, 2, 0, 14)
-Frame21.BackgroundColor = BrickColor.new("Really black")
-Frame21.BackgroundColor3 = Color3.new(0, 0, 0)
-Frame21.BorderColor = BrickColor.new("Institutional white")
-Frame21.BorderColor3 = Color3.new(1, 1, 1)
-Sound22.Name = "Hit"
-Sound22.Parent = Frame15
-Sound22.Volume = 1
-ScreenGui23.Name = "DonateGui"
-ScreenGui23.Parent = Tool0
-ImageButton24.Name = "Button"
-ImageButton24.Parent = ScreenGui23
-ImageButton24.Position = UDim2.new(0, 0, 0.699999988, 0)
-ImageButton24.Size = UDim2.new(0, 50, 0, 50)
-ImageButton24.BackgroundColor = BrickColor.new("Institutional white")
-ImageButton24.BackgroundColor3 = Color3.new(1, 1, 1)
-ImageButton24.BackgroundTransparency = 1
-ImageButton24.BorderSizePixel = 0
-ImageButton24.Image = "rbxassetid://114250383"
-ImageButton24.ImageTransparency = 1
-LocalScript25.Name = "MONEY$"
-LocalScript25.Parent = ImageButton24
-table.insert(cors,sandbox(LocalScript25,function()
-local productId = 192030868
-local player = game.Players.LocalPlayer
 
-script.Parent.MouseButton1Click:connect(function()
-	script.Parent.Sound:Play()
-	game:GetService("MarketplaceService"):PromptPurchase(player, productId)
+Player=game:GetService("Players").LocalPlayer
+Character=Player.Character 
+PlayerGui=Player.PlayerGui
+Backpack=Player.Backpack 
+Torso=Character.Torso 
+Head=Character.Head 
+Humanoid=Character.Humanoid
+m=Instance.new('Model',Character)
+LeftArm=Character["Left Arm"] 
+LeftLeg=Character["Left Leg"] 
+RightArm=Character["Right Arm"] 
+RightLeg=Character["Right Leg"] 
+LS=Torso["Left Shoulder"] 
+LH=Torso["Left Hip"] 
+RS=Torso["Right Shoulder"] 
+RH=Torso["Right Hip"] 
+Face = Head.face
+Neck=Torso.Neck
+it=Instance.new
+attacktype=1
+vt=Vector3.new
+cf=CFrame.new
+euler=CFrame.fromEulerAnglesXYZ
+angles=CFrame.Angles
+cloaked=false
+necko=cf(0, 1, 0, -1, -0, -0, 0, 0, 1, 0, 1, 0)
+necko2=cf(0, -0.5, 0, -1, -0, -0, 0, 0, 1, 0, 1, 0)
+LHC0=cf(-1,-1,0,-0,-0,-1,0,1,0,1,0,0)
+LHC1=cf(-0.5,1,0,-0,-0,-1,0,1,0,1,0,0)
+RHC0=cf(1,-1,0,0,0,1,0,1,0,-1,-0,-0)
+RHC1=cf(0.5,1,0,0,0,1,0,1,0,-1,-0,-0)
+RootPart=Character.HumanoidRootPart
+RootJoint=RootPart.RootJoint
+RootCF=euler(-1.57,0,3.14)
+attack = false 
+attackdebounce = false 
+deb=false
+equipped=true
+hand=false
+MMouse=nil
+combo=0
+mana=0
+trispeed=.2
+attackmode='none'
+local idle=0
+local Anim="Idle"
+local Effects={}
+local gun=false
+local shoot=false
+player=nil 
+mana=0
+
+mouse=Player:GetMouse()
+--save shoulders 
+RSH, LSH=nil, nil 
+--welds 
+RW, LW=Instance.new("Weld"), Instance.new("Weld") 
+RW.Name="Right Shoulder" LW.Name="Left Shoulder"
+LH=Torso["Left Hip"]
+RH=Torso["Right Hip"]
+TorsoColor=Torso.BrickColor
+function NoOutline(Part)
+Part.TopSurface,Part.BottomSurface,Part.LeftSurface,Part.RightSurface,Part.FrontSurface,Part.BackSurface = 10,10,10,10,10,10
+end
+player=Player 
+ch=Character
+RSH=ch.Torso["Right Shoulder"] 
+LSH=ch.Torso["Left Shoulder"] 
+-- 
+RSH.Parent=nil 
+LSH.Parent=nil 
+-- 
+RW.Name="Right Shoulder"
+RW.Part0=ch.Torso 
+RW.C0=cf(1.5, 0.5, 0) --* CFrame.fromEulerAnglesXYZ(1.3, 0, -0.5) 
+RW.C1=cf(0, 0.5, 0) 
+RW.Part1=ch["Right Arm"] 
+RW.Parent=ch.Torso 
+-- 
+LW.Name="Left Shoulder"
+LW.Part0=ch.Torso 
+LW.C0=cf(-1.5, 0.5, 0) --* CFrame.fromEulerAnglesXYZ(1.7, 0, 0.8) 
+LW.C1=cf(0, 0.5, 0) 
+LW.Part1=ch["Left Arm"] 
+LW.Parent=ch.Torso 
+
+	Player=game:GetService('Players').LocalPlayer
+	Character=Player.Character
+	Mouse=Player:GetMouse()
+	m=Instance.new('Model',Character)
+
+
+	local function weldBetween(a, b)
+	    local weldd = Instance.new("ManualWeld")
+	    weldd.Part0 = a
+	    weldd.Part1 = b
+	    weldd.C0 = CFrame.new()
+	    weldd.C1 = b.CFrame:inverse() * a.CFrame
+	    weldd.Parent = a
+	    return weldd
+	end
+	
+	it=Instance.new
+	
+	function nooutline(part)
+		part.TopSurface,part.BottomSurface,part.LeftSurface,part.RightSurface,part.FrontSurface,part.BackSurface = 10,10,10,10,10,10
+	end
+	
+	function part(formfactor,parent,material,reflectance,transparency,brickcolor,name,size)
+		local fp=it("Part")
+		fp.formFactor=formfactor
+		fp.Parent=parent
+		fp.Reflectance=reflectance
+		fp.Transparency=transparency
+		fp.CanCollide=false
+		fp.Locked=true
+		fp.BrickColor=BrickColor.new(tostring(brickcolor))
+		fp.Name=name
+		fp.Size=size
+		fp.Position=Character.Torso.Position
+		nooutline(fp)
+		fp.Material=material
+		fp:BreakJoints()
+		return fp
+	end
+	
+	function mesh(Mesh,part,meshtype,meshid,offset,scale)
+		local mesh=it(Mesh)
+		mesh.Parent=part
+		if Mesh=="SpecialMesh" then
+			mesh.MeshType=meshtype
+			mesh.MeshId=meshid
+		end
+		mesh.Offset=offset
+		mesh.Scale=scale
+		return mesh
+	end
+	
+	function weld(parent,part0,part1,c0,c1)
+		local weld=it("Weld")
+		weld.Parent=parent
+		weld.Part0=part0
+		weld.Part1=part1
+		weld.C0=c0
+		weld.C1=c1
+		return weld
+	end    
+
+
+    Player=game:GetService('Players').LocalPlayer
+	Character=Player.Character
+	Mouse=Player:GetMouse()
+	m=Instance.new('Model',Character)
+
+
+	local function weldBetween(a, b)
+	    local weldd = Instance.new("ManualWeld")
+	    weldd.Part0 = a
+	    weldd.Part1 = b
+	    weldd.C0 = CFrame.new()
+	    weldd.C1 = b.CFrame:inverse() * a.CFrame
+	    weldd.Parent = a
+	    return weldd
+	end
+	
+	it=Instance.new
+	
+	function nooutline(part)
+		part.TopSurface,part.BottomSurface,part.LeftSurface,part.RightSurface,part.FrontSurface,part.BackSurface = 10,10,10,10,10,10
+	end
+	
+	function part(formfactor,parent,material,reflectance,transparency,brickcolor,name,size)
+		local fp=it("Part")
+		fp.formFactor=formfactor
+		fp.Parent=parent
+		fp.Reflectance=reflectance
+		fp.Transparency=transparency
+		fp.CanCollide=false
+		fp.Locked=true
+		fp.BrickColor=BrickColor.new(tostring(brickcolor))
+		fp.Name=name
+		fp.Size=size
+		fp.Position=Character.Torso.Position
+		nooutline(fp)
+		fp.Material=material
+		fp:BreakJoints()
+		return fp
+	end
+	
+	function swait(num)
+    if num==0 or num==nil then
+    game:service'RunService'.Stepped:wait(0)
+    else
+    for i=0,num do
+    game:service'RunService'.Stepped:wait(0)
+    end
+    end
+    end
+	
+	function mesh(Mesh,part,meshtype,meshid,offset,scale)
+		local mesh=it(Mesh)
+		mesh.Parent=part
+		if Mesh=="SpecialMesh" then
+			mesh.MeshType=meshtype
+			mesh.MeshId=meshid
+		end
+		mesh.Offset=offset
+		mesh.Scale=scale
+		return mesh
+	end
+	
+	function weld(parent,part0,part1,c0,c1)
+		local weld=it("Weld")
+		weld.Parent=parent
+		weld.Part0=part0
+		weld.Part1=part1
+		weld.C0=c0
+		weld.C1=c1
+		return weld
+	end
+	
+	
+local function CFrameFromTopBack(at, top, back)
+local right = top:Cross(back)
+return CFrame.new(at.x, at.y, at.z,
+right.x, top.x, back.x,
+right.y, top.y, back.y,
+right.z, top.z, back.z)
+end
+
+function Triangle(a, b, c)
+local edg1 = (c-a):Dot((b-a).unit)
+local edg2 = (a-b):Dot((c-b).unit)
+local edg3 = (b-c):Dot((a-c).unit)
+if edg1 <= (b-a).magnitude and edg1 >= 0 then
+a, b, c = a, b, c
+elseif edg2 <= (c-b).magnitude and edg2 >= 0 then
+a, b, c = b, c, a
+elseif edg3 <= (a-c).magnitude and edg3 >= 0 then
+a, b, c = c, a, b
+else
+assert(false, "unreachable")
+end
+ 
+local len1 = (c-a):Dot((b-a).unit)
+local len2 = (b-a).magnitude - len1
+local width = (a + (b-a).unit*len1 - c).magnitude
+ 
+local maincf = CFrameFromTopBack(a, (b-a):Cross(c-b).unit, -(b-a).unit)
+ 
+local list = {}
+
+local Color = BrickColor.new("Dark grey")
+ 
+if len1 > 0.01 then
+local w1 = Instance.new('WedgePart', m)
+game:GetService("Debris"):AddItem(w1,5)
+w1.Material = "SmoothPlastic"
+w1.FormFactor = 'Custom'
+w1.BrickColor = BrickColor.new(Color)
+w1.Transparency = 0
+w1.Reflectance = 0
+w1.Material = "SmoothPlastic"
+w1.CanCollide = false
+NoOutline(w1)
+local sz = Vector3.new(0.2, width, len1)
+w1.Size = sz
+local sp = Instance.new("SpecialMesh",w1)
+sp.MeshType = "Wedge"
+sp.Scale = Vector3.new(0,1,1) * sz/w1.Size
+w1:BreakJoints()
+w1.Anchored = true
+w1.Parent = workspace
+w1.Transparency = 0.7
+table.insert(Effects,{w1,"Disappear",.01})
+w1.CFrame = maincf*CFrame.Angles(math.pi,0,math.pi/2)*CFrame.new(0,width/2,len1/2)
+table.insert(list,w1)
+end
+ 
+if len2 > 0.01 then
+local w2 = Instance.new('WedgePart', m)
+game:GetService("Debris"):AddItem(w2,5)
+w2.Material = "SmoothPlastic"
+w2.FormFactor = 'Custom'
+w2.BrickColor = BrickColor.new(Color)
+w2.Transparency = 0
+w2.Reflectance = 0
+w2.Material = "SmoothPlastic"
+w2.CanCollide = false
+NoOutline(w2)
+local sz = Vector3.new(0.2, width, len2)
+w2.Size = sz
+local sp = Instance.new("SpecialMesh",w2)
+sp.MeshType = "Wedge"
+sp.Scale = Vector3.new(0,1,1) * sz/w2.Size
+w2:BreakJoints()
+w2.Anchored = true
+w2.Parent = workspace
+w2.Transparency = 0.7
+table.insert(Effects,{w2,"Disappear",.01})
+w2.CFrame = maincf*CFrame.Angles(math.pi,math.pi,-math.pi/2)*CFrame.new(0,width/2,-len1 - len2/2)
+table.insert(list,w2)
+end
+return unpack(list)
+end
+	
+	
+so = function(id,par,vol,pit) 
+coroutine.resume(coroutine.create(function()
+local sou = Instance.new("Sound",par or workspace)
+sou.Volume=vol
+sou.Pitch=pit or 1
+sou.SoundId=id
+swait() 
+sou:play() 
+game:GetService("Debris"):AddItem(sou,6)
+end))
+end
+ 
+function clerp(a,b,t) 
+local qa = {QuaternionFromCFrame(a)}
+local qb = {QuaternionFromCFrame(b)} 
+local ax, ay, az = a.x, a.y, a.z 
+local bx, by, bz = b.x, b.y, b.z
+local _t = 1-t
+return QuaternionToCFrame(_t*ax + t*bx, _t*ay + t*by, _t*az + t*bz,QuaternionSlerp(qa, qb, t)) 
+end 
+ 
+function QuaternionFromCFrame(cf) 
+local mx, my, mz, m00, m01, m02, m10, m11, m12, m20, m21, m22 = cf:components() 
+local trace = m00 + m11 + m22 
+if trace > 0 then 
+local s = math.sqrt(1 + trace) 
+local recip = 0.5/s 
+return (m21-m12)*recip, (m02-m20)*recip, (m10-m01)*recip, s*0.5 
+else 
+local i = 0 
+if m11 > m00 then
+i = 1
+end
+if m22 > (i == 0 and m00 or m11) then 
+i = 2 
+end 
+if i == 0 then 
+local s = math.sqrt(m00-m11-m22+1) 
+local recip = 0.5/s 
+return 0.5*s, (m10+m01)*recip, (m20+m02)*recip, (m21-m12)*recip 
+elseif i == 1 then 
+local s = math.sqrt(m11-m22-m00+1) 
+local recip = 0.5/s 
+return (m01+m10)*recip, 0.5*s, (m21+m12)*recip, (m02-m20)*recip 
+elseif i == 2 then 
+local s = math.sqrt(m22-m00-m11+1) 
+local recip = 0.5/s return (m02+m20)*recip, (m12+m21)*recip, 0.5*s, (m10-m01)*recip 
+end 
+end 
+end
+ 
+function QuaternionToCFrame(px, py, pz, x, y, z, w) 
+local xs, ys, zs = x + x, y + y, z + z 
+local wx, wy, wz = w*xs, w*ys, w*zs 
+local xx = x*xs 
+local xy = x*ys 
+local xz = x*zs 
+local yy = y*ys 
+local yz = y*zs 
+local zz = z*zs 
+return CFrame.new(px, py, pz,1-(yy+zz), xy - wz, xz + wy,xy + wz, 1-(xx+zz), yz - wx, xz - wy, yz + wx, 1-(xx+yy)) 
+end
+ 
+function QuaternionSlerp(a, b, t) 
+local cosTheta = a[1]*b[1] + a[2]*b[2] + a[3]*b[3] + a[4]*b[4] 
+local startInterp, finishInterp; 
+if cosTheta >= 0.0001 then 
+if (1 - cosTheta) > 0.0001 then 
+local theta = math.acos(cosTheta) 
+local invSinTheta = 1/math.sin(theta) 
+startInterp = math.sin((1-t)*theta)*invSinTheta 
+finishInterp = math.sin(t*theta)*invSinTheta  
+else 
+startInterp = 1-t 
+finishInterp = t 
+end 
+else 
+if (1+cosTheta) > 0.0001 then 
+local theta = math.acos(-cosTheta) 
+local invSinTheta = 1/math.sin(theta) 
+startInterp = math.sin((t-1)*theta)*invSinTheta 
+finishInterp = math.sin(t*theta)*invSinTheta 
+else 
+startInterp = t-1 
+finishInterp = t 
+end 
+end 
+return a[1]*startInterp + b[1]*finishInterp, a[2]*startInterp + b[2]*finishInterp, a[3]*startInterp + b[3]*finishInterp, a[4]*startInterp + b[4]*finishInterp 
+end
+
+function rayCast(Pos, Dir, Max, Ignore)  -- Origin Position , Direction, MaxDistance , IgnoreDescendants
+return game:service("Workspace"):FindPartOnRay(Ray.new(Pos, Dir.unit * (Max or 999.999)), Ignore) 
+end 
+
+Player=game:GetService('Players').LocalPlayer
+        Character=Player.Character
+        Mouse=Player:GetMouse()
+        m=Instance.new('Model',Character)
+
+
+        local function weldBetween(a, b)
+            local weldd = Instance.new("ManualWeld")
+            weldd.Part0 = a
+            weldd.Part1 = b
+            weldd.C0 = CFrame.new()
+            weldd.C1 = b.CFrame:inverse() * a.CFrame
+            weldd.Parent = a
+            return weldd
+        end
+        
+        it=Instance.new
+        
+        function nooutline(part)
+                part.TopSurface,part.BottomSurface,part.LeftSurface,part.RightSurface,part.FrontSurface,part.BackSurface = 10,10,10,10,10,10
+        end
+        
+        function part(formfactor,parent,material,reflectance,transparency,brickcolor,name,size)
+                local fp=it("Part")
+                fp.formFactor=formfactor
+                fp.Parent=parent
+                fp.Reflectance=reflectance
+                fp.Transparency=transparency
+                fp.CanCollide=false
+                fp.Locked=true
+                fp.BrickColor=BrickColor.new(tostring(brickcolor))
+                fp.Name=name
+                fp.Size=size
+                fp.Position=Character.Torso.Position
+                nooutline(fp)
+                fp.Material=material
+                fp:BreakJoints()
+                return fp
+        end
+        
+        function mesh(Mesh,part,meshtype,meshid,offset,scale)
+                local mesh=it(Mesh)
+                mesh.Parent=part
+                if Mesh=="SpecialMesh" then
+                        mesh.MeshType=meshtype
+                        mesh.MeshId=meshid
+                end
+                mesh.Offset=offset
+                mesh.Scale=scale
+                return mesh
+        end
+        
+        function weld(parent,part0,part1,c0,c1)
+                local weld=it("Weld")
+                weld.Parent=parent
+                weld.Part0=part0
+                weld.Part1=part1
+                weld.C0=c0
+                weld.C1=c1
+                return weld
+        end
+
+handle=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Handle",Vector3.new(0.249872148, 0.251215011, 0.249872148))
+handleweld=weld(m,Character["Right Arm"],handle,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000205993652, -0.360076904, -0.95643425, -0.99999994, -0.000225757583, -0.000720398675, 0.00072045275, -0.000239534784, -0.999999762, 0.000225584954, -1, 0.000239697489))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.249872148, 0.251215041))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(4.57763672e-005, 0.0691184998, -0.314193964, 1.00000024, -5.92179131e-005, -1.29602695e-005, 5.92175056e-005, 1, -1.97537011e-005, 1.29613618e-005, 1.97527552e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000465393066, -0.45242691, 0.288010597, -0.999997497, 0.000725772523, 0.000227257871, -0.000725722872, -1.00000441, 0.000240282548, 0.000227538287, 0.000240116162, 1.00000548))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000473022461, 0.45243454, 0.0367903709, 0.999997497, -0.000720366137, -0.00022235082, 0.000720317767, 1.00000441, -0.000239741683, 0.000222629576, 0.000239580055, 1.00000548))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.376822561, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000473022461, 0.207035065, -0.17373085, 0.999997497, -0.00072160142, -0.00022359869, 0.00073676958, 0.866149008, 0.499794632, -0.000166879006, -0.499795169, 0.866149962))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000465393066, 0.45243454, 0.0888251066, -0.999997497, 0.000725971942, 0.00021874324, 0.000725924212, 1.00000441, -0.000240576948, -0.000219023961, -0.000240416673, -1.00000548))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.502430081, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(3.81469727e-005, 0.131931305, -0.502456903, 1.00000024, -5.92213473e-005, -1.04527553e-005, 5.92209981e-005, 1, -1.97814952e-005, 1.04538531e-005, 1.97806949e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.00016784668, -0.559078217, 0.125410795, 1.00000036, -5.56436135e-006, 5.70751354e-006, 5.56418672e-006, 1.00000012, -6.32018782e-007, -5.70759948e-006, 6.31829607e-007, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.249872148, 0.251215011))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000114440918, -0.559070587, -0.0630459785, 1.00000036, -3.43425199e-009, 4.1882933e-007, 3.25962901e-009, 1.00000012, -5.07861841e-009, -4.18907319e-007, 4.86033969e-009, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000473022461, 0.326820374, 0.287996054, 0.999997497, -0.000720454438, -0.00022328952, 0.000720405835, 1.00000441, -0.000239729197, 0.000223568277, 0.000239566856, 1.00000548))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.249872148, 0.251215011, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000473022461, 0.389625549, 0.162387133, 0.999997497, -0.00072036538, -0.000222872448, 0.000720316893, 1.00000441, -0.000239734727, 0.000223151204, 0.000239572721, 1.00000548))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.251215011, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-7.62939453e-006, 0.0062828064, -0.125666976, 1.00000036, -5.82076609e-011, -1.0415279e-007, -5.82076609e-011, 1.00000012, 1.92085281e-009, 1.04069201e-007, -2.12457962e-009, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.249872148, 0.320299208, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000480651855, 0.235279083, -0.0481357574, 0.999997497, -0.000721339951, -0.000224050062, 0.000736768707, 0.866149008, 0.499794632, -0.000166357378, -0.499795169, 0.866149962))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000114440918, 0.182186127, 0.12538743, -1.00000036, 9.11590178e-006, 1.74332206e-006, -9.11578536e-006, -1.00000012, 9.46136424e-007, 1.74326954e-006, 9.45903594e-007, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.251215041, 0.628037632))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.433101654, -1.0681597, -0.000518798828, -0.000720398675, -0.999999762, 0.000239697489, 0.000225757554, 0.000239534755, 0.999999881, -0.99999994, 0.00072045275, 0.000225584954))
+mesh("SpecialMesh",Part,Enum.MeshType.FileMesh,"http://www.roblox.com/asset/?id=3270017",Vector3.new(0, 0, 0),Vector3.new(0.0791327506, 0.195947751, 2.49582171))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.251215041, 0.628037632))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.449054718, 1.06155396, -0.000518798828, 0.000349763839, 0.706936777, -0.707275927, -0.00066903315, -0.707275689, -0.706936777, -0.99999994, 0.00072045275, 0.000225584954))
+mesh("SpecialMesh",Part,Enum.MeshType.FileMesh,"http://www.roblox.com/asset/?id=3270017",Vector3.new(0, 0, 0),Vector3.new(0.0791327357, 0.195947766, 2.49582171))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.25121507, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000106811523, -0.370616913, 0.125349045, 1.00000036, 7.15954229e-009, -5.11285134e-006, -7.33416528e-009, 1.00000012, 6.86413841e-008, 5.11277858e-006, -6.88451109e-008, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822501, 0.249872148, 0.628037453))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(6.10351563e-005, -0.55904007, -0.628454924, 1.00000036, -3.20364488e-005, -2.10887192e-005, 3.20360414e-005, 1.00000012, -1.04982755e-005, 2.10889866e-005, 1.0497417e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822561, 0.249872148, 0.502430081))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(2.28881836e-005, -0.433403015, -0.188618064, 1.00000036, 1.11758709e-008, -6.992203e-006, -1.13504939e-008, 1.00000012, 9.36706783e-008, 6.9921266e-006, -9.38744051e-008, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000106811523, -1.00516951, 0.320278168, -1.00000024, 6.65510888e-005, 1.68400602e-005, 1.68413608e-005, 2.0647436e-005, 1, 6.65506232e-005, 1, -2.06487457e-005))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.376822591, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(3.81469727e-005, 0.0691642761, -1.00482428, 1.00000024, -5.9222104e-005, -9.93106914e-006, 5.92217548e-005, 1, -1.9788451e-005, 9.9321569e-006, 1.97876652e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822501, 0.249872148, 0.376822591))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(2.28881836e-005, -0.433422089, -0.753872871, 1.00000036, 8.68557254e-006, -5.82381335e-006, -8.68568895e-006, 1.00000012, 2.99772364e-006, 5.8237415e-006, -2.99786916e-006, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.249872148, 0.376822591))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(5.34057617e-005, 0.32036972, -0.753610492, 1.00000024, -5.92212891e-005, -1.04526243e-005, 5.92209399e-005, 1, -1.97814952e-005, 1.04537221e-005, 1.97806949e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.249872148, 0.376822591, 0.376822591))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(2.28881836e-005, 0.0691490173, -0.753605008, 1.00000024, -5.9221813e-005, -1.01400929e-005, 5.92214637e-005, 1, -1.97856716e-005, 1.01411933e-005, 1.97848713e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822501, 0.25121507, 0.502430022))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(3.81469727e-005, -0.244979858, -0.188724279, 1.00000036, 1.11758709e-008, -6.99218845e-006, -1.13504939e-008, 1.00000012, 9.36706783e-008, 6.99211205e-006, -9.38744051e-008, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822501, 0.376822591, 0.376822561))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(6.86645508e-005, -0.433349609, -1.38218713, 1.00000024, -5.91896242e-005, -2.39263682e-005, 5.92111028e-005, 1, -1.96207548e-005, 2.39328383e-005, 1.96265173e-005, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000114440918, -0.559082031, 0.251346588, -1.00000024, -2.39079236e-005, -1.38423338e-005, -2.39082146e-005, 1, 9.51347465e-006, 1.38421719e-005, 9.51398397e-006, -1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000144958496, 0.559082031, -0.251361251, -1.00000024, -1.84752862e-005, -6.47418165e-006, 1.84755772e-005, -1, -9.59941826e-006, -6.47407114e-006, -9.59972385e-006, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000137329102, -0.43346405, 0.502572298, -1.00000036, 5.48030948e-006, -6.26139763e-006, 5.48013486e-006, 1.00000012, -2.82510882e-007, 6.26146448e-006, -2.82365363e-007, -1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000137329102, 0.43346405, -0.502573967, -1.00000036, 1.09116663e-005, 1.524249e-006, -1.09114917e-005, -1.00000012, 1.91022991e-007, 1.52417022e-006, 1.90804712e-007, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.249872148, 0.25121507))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(9.15527344e-005, -0.0565261841, -1.06798422, 1.00000024, -5.9191836e-005, -2.70642977e-005, 5.91911376e-005, 1, -1.95882458e-005, 2.70653727e-005, 1.95864559e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.376822591, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000495910645, -0.625137329, -0.67111969, 0.999997497, -0.00072721875, -0.000194401277, 0.000651851704, 0.707277596, 0.706942856, -0.000376532524, -0.70694226, 0.70727849))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 1, 0.502687335))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.249872148, 0.395663708))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000137329102, 0.144451141, -0.62521112, 1.00000024, -5.9185375e-005, -3.07253576e-005, 5.91846183e-005, 1, -1.95451576e-005, 3.07264309e-005, 1.95431639e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.376822591, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000106811523, -0.433422089, -1.63327813, 1.00000024, -5.919463e-005, -2.74966787e-005, 5.91939315e-005, 1, -1.95596949e-005, 2.74977483e-005, 1.95578905e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.376822591, 0.251215041))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(9.15527344e-005, -0.433334351, -1.0680908, 1.00000036, -4.52231034e-005, -2.28274512e-005, 4.52225795e-005, 1.00000012, -1.49286498e-005, 2.28280478e-005, 1.49274274e-005, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.249872148, 0.376822591))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.43334198, 1.75898731, 0.000129699707, -2.69297161e-005, -1.00000012, 1.91715808e-005, -6.51740556e-005, -1.91696308e-005, -1, 1.00000036, -2.69311131e-005, -6.51736191e-005))
+mesh("CylinderMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000129699707, -0.684700012, -1.50741279, 1.00000024, -6.4982567e-005, -1.10206747e-005, 6.50263974e-005, 1, -1.95248285e-005, 1.10326419e-005, 1.95386674e-005, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(8.39233398e-005, -0.684638977, -1.63328862, 1.00000024, -5.919463e-005, -2.74966787e-005, 5.91939315e-005, 1, -1.95596949e-005, 2.74977483e-005, 1.95578905e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.251215041, 0.249872148, 0.376822591))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.244930267, 1.75896168, 0.000129699707, -2.69391458e-005, -1.00000012, 1.92259758e-005, -5.96150421e-005, -1.9224186e-005, -1, 1.00000036, -2.69404845e-005, -5.96145801e-005))
+mesh("CylinderMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.125732422, -0.684707642, -0.125760436, 1.00000036, -5.79509651e-006, 7.80390383e-006, 5.79492189e-006, 1.00000012, 1.72105501e-007, -7.80397568e-006, -1.72265572e-007, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822501, 0.249872148, 0.502430081))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(3.81469727e-005, -0.307754517, -0.6913836, 1.00000024, -1.13646965e-005, -1.22719966e-005, 1.13644637e-005, 1, -3.66875611e-006, 1.22719612e-005, 3.66842141e-006, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.125473022, -0.684703827, -0.125751019, 1.00000036, -5.79480547e-006, 7.69880899e-006, 5.79463085e-006, 1.00000012, 1.73502485e-007, -7.69889721e-006, -1.73648004e-007, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.249872148, 1.13046777))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(9.91821289e-005, -0.182117462, -1.13084769, 1.00000024, -5.91959688e-005, -2.53911767e-005, 5.91952703e-005, 1, -1.96104957e-005, 2.53922535e-005, 1.96088076e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000198364258, 0.502620816, 0.182220459, -1.00000036, 3.14078643e-005, 2.9162622e-005, -2.91631495e-005, -1.99905044e-005, -1, -3.14071076e-005, -1.00000012, 1.99916249e-005))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000198364258, -0.502616286, -0.182235718, -1.00000036, 3.87764885e-005, 2.37294116e-005, 2.37300956e-005, 1.99014321e-005, 1, 3.87758482e-005, 1.00000012, -1.99025526e-005))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.125656128, -0.684650421, -0.251537204, 1.00000036, 1.50175765e-008, -8.97663449e-006, -1.51921995e-008, 1.00000012, 1.48662366e-007, 8.97656173e-006, -1.48866093e-007, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.125549316, -0.684650421, -0.251536846, 1.00000036, 1.51921995e-008, -9.08120455e-006, -1.53668225e-008, 1.00000012, 1.5005935e-007, 9.08113088e-006, -1.50248525e-007, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.251215041, 0.628037632))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(1.06815958, 0.433101654, -0.000518798828, -0.000225757482, -0.000239519795, -0.999999642, -0.000720398501, -0.999999523, 0.000239682529, -0.99999994, 0.00072045275, 0.000225584954))
+mesh("SpecialMesh",Part,Enum.MeshType.FileMesh,"http://www.roblox.com/asset/?id=3270017",Vector3.new(0, 0, 0),Vector3.new(0.0791327506, 0.195947751, 2.49582171))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.251215041, 0.628037632))
+Partweld=weld(m,handle,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(1.06155396, -0.449050903, -0.000518798828, -0.000669033267, -0.707275808, -0.706936955, -0.000349763926, -0.706936955, 0.707276046, -0.99999994, 0.00072045275, 0.000225584954))
+mesh("SpecialMesh",Part,Enum.MeshType.FileMesh,"http://www.roblox.com/asset/?id=3270017",Vector3.new(0, 0, 0),Vector3.new(0.0791327506, 0.195947751, 2.49582171))
+BarrelA=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Barrel",Vector3.new(0.251214981, 0.249872148, 0.376822591))
+BarrelAweld=weld(m,handle,BarrelA,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.433361053, 1.76527333, 0.00016784668, -5.6413468e-005, -1, 1.91889267e-005, -7.36084621e-005, -1.91846048e-005, -1.00000024, 1.00000048, -5.64150396e-005, -7.36074362e-005))
+mesh("CylinderMesh",BarrelA,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+mesh("BlockMesh",handle,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+
+handle2=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","handle2",Vector3.new(0.249872148, 0.251215011, 0.249872148))
+handle2weld=weld(m,Character["Left Arm"],handle2,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000198364258, -0.36007309, -0.95643425, -0.99999994, -0.000225757583, -0.000720398675, 0.00072045275, -0.000239534784, -0.999999762, 0.000225584954, -1, 0.000239697489))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.249872148, 0.251215041))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(4.57763672e-005, 0.0691146851, -0.314193964, 1.00000024, -5.92179131e-005, -1.29602695e-005, 5.92175056e-005, 1, -1.97537011e-005, 1.29613618e-005, 1.97527552e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000465393066, -0.452423096, 0.288010597, -0.999997497, 0.000725772523, 0.000227257871, -0.000725722872, -1.00000441, 0.000240282548, 0.000227538287, 0.000240116162, 1.00000548))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000473022461, 0.452430725, 0.0367903709, 0.999997497, -0.000720366137, -0.00022235082, 0.000720317767, 1.00000441, -0.000239741683, 0.000222629576, 0.000239580055, 1.00000548))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.376822561, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000473022461, 0.20703125, -0.173728943, 0.999997497, -0.00072160142, -0.00022359869, 0.00073676958, 0.866149008, 0.499794632, -0.000166879006, -0.499795169, 0.866149962))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000465393066, 0.452430725, 0.0888252258, -0.999997497, 0.000725971942, 0.00021874324, 0.000725924212, 1.00000441, -0.000240576948, -0.000219023961, -0.000240416673, -1.00000548))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.502430081, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(3.81469727e-005, 0.13192749, -0.502457142, 1.00000024, -5.92213473e-005, -1.04527553e-005, 5.92209981e-005, 1, -1.97814952e-005, 1.04538531e-005, 1.97806949e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.00016784668, -0.559078217, 0.125410557, 1.00000036, -5.56436135e-006, 5.70751354e-006, 5.56418672e-006, 1.00000012, -6.32018782e-007, -5.70759948e-006, 6.31829607e-007, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.249872148, 0.251215011))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000114440918, -0.559074402, -0.0630459785, 1.00000036, -3.43425199e-009, 4.1882933e-007, 3.25962901e-009, 1.00000012, -5.07861841e-009, -4.18907319e-007, 4.86033969e-009, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000473022461, 0.326816559, 0.287996054, 0.999997497, -0.000720454438, -0.00022328952, 0.000720405835, 1.00000441, -0.000239729197, 0.000223568277, 0.000239566856, 1.00000548))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.249872148, 0.251215011, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000473022461, 0.389621735, 0.162387133, 0.999997497, -0.00072036538, -0.000222872448, 0.000720316893, 1.00000441, -0.000239734727, 0.000223151204, 0.000239572721, 1.00000548))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.251215011, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-7.62939453e-006, 0.006275177, -0.125666976, 1.00000036, -5.82076609e-011, -1.0415279e-007, -5.82076609e-011, 1.00000012, 1.92085281e-009, 1.04069201e-007, -2.12457962e-009, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.249872148, 0.320299208, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000480651855, 0.235275269, -0.0481338501, 0.999997497, -0.000721339951, -0.000224050062, 0.000736768707, 0.866149008, 0.499794632, -0.000166357378, -0.499795169, 0.866149962))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000114440918, 0.182186127, 0.12538743, -1.00000036, 9.11590178e-006, 1.74332206e-006, -9.11578536e-006, -1.00000012, 9.46136424e-007, 1.74326954e-006, 9.45903594e-007, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.251215041, 0.628037632))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.433105469, -1.0681597, -0.000518798828, -0.000720398675, -0.999999762, 0.000239697489, 0.000225757554, 0.000239534755, 0.999999881, -0.99999994, 0.00072045275, 0.000225584954))
+mesh("SpecialMesh",Part,Enum.MeshType.FileMesh,"http://www.roblox.com/asset/?id=3270017",Vector3.new(0, 0, 0),Vector3.new(0.0791327506, 0.195947751, 2.49582171))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.251215041, 0.628037632))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.449050903, 1.06155396, -0.000518798828, 0.000349763839, 0.706936777, -0.707275927, -0.00066903315, -0.707275689, -0.706936777, -0.99999994, 0.00072045275, 0.000225584954))
+mesh("SpecialMesh",Part,Enum.MeshType.FileMesh,"http://www.roblox.com/asset/?id=3270017",Vector3.new(0, 0, 0),Vector3.new(0.0791327357, 0.195947766, 2.49582171))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.25121507, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000106811523, -0.370620728, 0.125349045, 1.00000036, 7.15954229e-009, -5.11285134e-006, -7.33416528e-009, 1.00000012, 6.86413841e-008, 5.11277858e-006, -6.88451109e-008, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822501, 0.249872148, 0.628037453))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(6.10351563e-005, -0.559043884, -0.628455162, 1.00000036, -3.20364488e-005, -2.10887192e-005, 3.20360414e-005, 1.00000012, -1.04982755e-005, 2.10889866e-005, 1.0497417e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822561, 0.249872148, 0.502430081))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(2.28881836e-005, -0.43340683, -0.188618183, 1.00000036, 1.11758709e-008, -6.992203e-006, -1.13504939e-008, 1.00000012, 9.36706783e-008, 6.9921266e-006, -9.38744051e-008, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000106811523, -1.00516927, 0.320274353, -1.00000024, 6.65510888e-005, 1.68400602e-005, 1.68413608e-005, 2.0647436e-005, 1, 6.65506232e-005, 1, -2.06487457e-005))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.376822591, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(3.81469727e-005, 0.0691604614, -1.0048244, 1.00000024, -5.9222104e-005, -9.93106914e-006, 5.92217548e-005, 1, -1.9788451e-005, 9.9321569e-006, 1.97876652e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822501, 0.249872148, 0.376822591))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(2.28881836e-005, -0.433425903, -0.753872871, 1.00000036, 8.68557254e-006, -5.82381335e-006, -8.68568895e-006, 1.00000012, 2.99772364e-006, 5.8237415e-006, -2.99786916e-006, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.249872148, 0.376822591))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(5.34057617e-005, 0.320365906, -0.75361073, 1.00000024, -5.92212891e-005, -1.04526243e-005, 5.92209399e-005, 1, -1.97814952e-005, 1.04537221e-005, 1.97806949e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.249872148, 0.376822591, 0.376822591))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(2.28881836e-005, 0.0691452026, -0.753605008, 1.00000024, -5.9221813e-005, -1.01400929e-005, 5.92214637e-005, 1, -1.97856716e-005, 1.01411933e-005, 1.97848713e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822501, 0.25121507, 0.502430022))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(3.81469727e-005, -0.244983673, -0.188724399, 1.00000036, 1.11758709e-008, -6.99218845e-006, -1.13504939e-008, 1.00000012, 9.36706783e-008, 6.99211205e-006, -9.38744051e-008, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822501, 0.376822591, 0.376822561))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(6.86645508e-005, -0.433353424, -1.38218737, 1.00000024, -5.91896242e-005, -2.39263682e-005, 5.92111028e-005, 1, -1.96207548e-005, 2.39328383e-005, 1.96265173e-005, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000114440918, -0.559089661, 0.251346469, -1.00000024, -2.39079236e-005, -1.38423338e-005, -2.39082146e-005, 1, 9.51347465e-006, 1.38421719e-005, 9.51398397e-006, -1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000144958496, 0.559089661, -0.251361251, -1.00000024, -1.84752862e-005, -6.47418165e-006, 1.84755772e-005, -1, -9.59941826e-006, -6.47407114e-006, -9.59972385e-006, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000137329102, -0.43347168, 0.502572179, -1.00000036, 5.48030948e-006, -6.26139763e-006, 5.48013486e-006, 1.00000012, -2.82510882e-007, 6.26146448e-006, -2.82365363e-007, -1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000137329102, 0.433467865, -0.502573967, -1.00000036, 1.09116663e-005, 1.524249e-006, -1.09114917e-005, -1.00000012, 1.91022991e-007, 1.52417022e-006, 1.90804712e-007, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.249872148, 0.25121507))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(9.15527344e-005, -0.0565299988, -1.0679841, 1.00000024, -5.9191836e-005, -2.70642977e-005, 5.91911376e-005, 1, -1.95882458e-005, 2.70653727e-005, 1.95864559e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.376822591, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000495910645, -0.625141144, -0.67111969, 0.999997497, -0.00072721875, -0.000194401277, 0.000651851704, 0.707277596, 0.706942856, -0.000376532524, -0.70694226, 0.70727849))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 1, 0.502687335))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.249872148, 0.395663708))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000137329102, 0.144447327, -0.62521112, 1.00000024, -5.9185375e-005, -3.07253576e-005, 5.91846183e-005, 1, -1.95451576e-005, 3.07264309e-005, 1.95431639e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.376822591, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000106811523, -0.433425903, -1.63327825, 1.00000024, -5.919463e-005, -2.74966787e-005, 5.91939315e-005, 1, -1.95596949e-005, 2.74977483e-005, 1.95578905e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 1, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.376822591, 0.251215041))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(9.15527344e-005, -0.433338165, -1.06809092, 1.00000036, -4.52231034e-005, -2.28274512e-005, 4.52225795e-005, 1.00000012, -1.49286498e-005, 2.28280478e-005, 1.49274274e-005, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.249872148, 0.376822591))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.433349609, 1.75898743, 0.000129699707, -2.69297161e-005, -1.00000012, 1.91715808e-005, -6.51740556e-005, -1.91696308e-005, -1, 1.00000036, -2.69311131e-005, -6.51736191e-005))
+mesh("CylinderMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.000129699707, -0.684707642, -1.50741291, 1.00000024, -6.4982567e-005, -1.10206747e-005, 6.50263974e-005, 1, -1.95248285e-005, 1.10326419e-005, 1.95386674e-005, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(8.39233398e-005, -0.684642792, -1.63328874, 1.00000024, -5.919463e-005, -2.74966787e-005, 5.91939315e-005, 1, -1.95596949e-005, 2.74977483e-005, 1.95578905e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.251215041, 0.249872148, 0.376822591))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.244937897, 1.75896156, 0.000129699707, -2.69391458e-005, -1.00000012, 1.92259758e-005, -5.96150421e-005, -1.9224186e-005, -1, 1.00000036, -2.69404845e-005, -5.96145801e-005))
+mesh("CylinderMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.125732422, -0.684711456, -0.125760555, 1.00000036, -5.79509651e-006, 7.80390383e-006, 5.79492189e-006, 1.00000012, 1.72105501e-007, -7.80397568e-006, -1.72265572e-007, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822501, 0.249872148, 0.502430081))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(3.81469727e-005, -0.307758331, -0.691383839, 1.00000024, -1.13646965e-005, -1.22719966e-005, 1.13644637e-005, 1, -3.66875611e-006, 1.22719612e-005, 3.66842141e-006, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.125473022, -0.684707642, -0.125751138, 1.00000036, -5.79480547e-006, 7.69880899e-006, 5.79463085e-006, 1.00000012, 1.73502485e-007, -7.69889721e-006, -1.73648004e-007, 1))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822501, 0.249872148, 1.13046777))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(9.91821289e-005, -0.182121277, -1.13084757, 1.00000024, -5.91959688e-005, -2.53911767e-005, 5.91952703e-005, 1, -1.96104957e-005, 2.53922535e-005, 1.96088076e-005, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000198364258, 0.502620697, 0.182224274, -1.00000036, 3.14078643e-005, 2.9162622e-005, -2.91631495e-005, -1.99905044e-005, -1, -3.14071076e-005, -1.00000012, 1.99916249e-005))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Dark stone grey","Part",Vector3.new(0.376822591, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.000198364258, -0.502616286, -0.182239532, -1.00000036, 3.87764885e-005, 2.37294116e-005, 2.37300956e-005, 1.99014321e-005, 1, 3.87758482e-005, 1.00000012, -1.99025526e-005))
+mesh("SpecialMesh",Part,Enum.MeshType.Wedge,"",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.125656128, -0.684658051, -0.251536965, 1.00000036, 1.50175765e-008, -8.97663449e-006, -1.51921995e-008, 1.00000012, 1.48662366e-007, 8.97656173e-006, -1.48866093e-007, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Institutional white","Part",Vector3.new(0.249872148, 0.249872148, 0.249872148))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(-0.125549316, -0.684654236, -0.251536846, 1.00000036, 1.51921995e-008, -9.08120455e-006, -1.53668225e-008, 1.00000012, 1.5005935e-007, 9.08113088e-006, -1.50248525e-007, 1))
+mesh("BlockMesh",Part,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 0.502687216, 0.502687216))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.251215041, 0.628037632))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(1.06815958, 0.433105469, -0.000518798828, -0.000225757482, -0.000239519795, -0.999999642, -0.000720398501, -0.999999523, 0.000239682529, -0.99999994, 0.00072045275, 0.000225584954))
+mesh("SpecialMesh",Part,Enum.MeshType.FileMesh,"http://www.roblox.com/asset/?id=3270017",Vector3.new(0, 0, 0),Vector3.new(0.0791327506, 0.195947751, 2.49582171))
+Part=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Part",Vector3.new(0.249872148, 0.251215041, 0.628037632))
+Partweld=weld(m,handle2,Part,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(1.06155396, -0.449050903, -0.000518798828, -0.000669033267, -0.707275808, -0.706936955, -0.000349763926, -0.706936955, 0.707276046, -0.99999994, 0.00072045275, 0.000225584954))
+mesh("SpecialMesh",Part,Enum.MeshType.FileMesh,"http://www.roblox.com/asset/?id=3270017",Vector3.new(0, 0, 0),Vector3.new(0.0791327506, 0.195947751, 2.49582171))
+BarrelB=part(Enum.FormFactor.Custom,m,Enum.Material.SmoothPlastic,0,0,"Really black","Barrel",Vector3.new(0.251214981, 0.249872148, 0.376822591))
+BarrelBweld=weld(m,handle2,BarrelB,CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),CFrame.new(0.433368683, 1.76527357, 0.00016784668, -5.6413468e-005, -1, 1.91889267e-005, -7.36084621e-005, -1.91846048e-005, -1.00000024, 1.00000048, -5.64150396e-005, -7.36074362e-005))
+mesh("CylinderMesh",BarrelB,"","",Vector3.new(0, 0, 0),Vector3.new(1, 0.502687216, 1))
+mesh("BlockMesh",handle2,"","",Vector3.new(0, 0, 0),Vector3.new(0.502687216, 1, 0.502687216))
+
+function Laser(Part,Dmg) 
+sp = Part.Position 
+dirr = Part.CFrame * CFrame.fromEulerAnglesXYZ(-1.57,0,0) 
+local hit,pos = rayCast(sp,dirr.lookVector,500,Character) 
+local las=Instance.new("Part",Character) 
+las.Anchored=true 
+las.Locked=true 
+las.CanCollide=false 
+las.TopSurface=0 
+las.BottomSurface=0 
+las.FormFactor = "Custom" 
+las.BrickColor=BrickColor.new("Light stone grey") 
+las.Size=Vector3.new(1,1,1) 
+las.CFrame=CFrame.new((Part.Position+pos)/2,pos) *CFrame.Angles(math.rad(90),0,0) 
+local msh=Instance.new("SpecialMesh",las) 
+mag = (Part.Position-pos).magnitude 
+msh.Scale=Vector3.new(0.1,mag,0.1) 
+coroutine.resume(coroutine.create(function(Part,Mesh) 
+for i = 0,1,0.1 do 
+wait() 
+Part.Transparency = Part.Transparency + 0.1 
+Mesh.Scale = Mesh.Scale + Vector3.new(0.15,0.7,0.15) 
+end 
+Part.Parent = nil 
+end),las,msh) 
+if pos ~= nil then 
+local las2=Instance.new("Part",Character) 
+las2.Anchored=true 
+las2.Locked=true 
+las2.CanCollide=false 
+las2.TopSurface=0 
+las2.BottomSurface=0 
+las2.FormFactor = "Custom" 
+las2.BrickColor=BrickColor.new("Light stone grey") 
+las2.Size=Vector3.new(1,1,1) 
+--las2.CFrame=CFrame.new((Part.Position+pos)/2,pos) *CFrame.Angles(math.rad(90),0,0) 
+las2.CFrame=CFrame.new(pos) *CFrame.Angles(math.rad(90),0,0) 
+local msh=Instance.new("SpecialMesh",las2) 
+msh.MeshType = "Sphere"
+mag = (Part.Position-pos).magnitude 
+msh.Scale=Vector3.new(0.1,0.1,0.1) 
+coroutine.resume(coroutine.create(function(Part,Mesh) 
+--wait(10) 
+for i = 0,1,0.1 do 
+wait() 
+Part.Transparency = Part.Transparency + 0.1 
+Mesh.Scale = Mesh.Scale + Vector3.new(0.5,0,0.5) 
+end 
+Part.Parent = nil 
+end),las2,msh) 
+end 
+if hit ~= nil and pos ~= nil then 
+if hit.Parent.className == "Hat" then 
+hit:BreakJoints() 
+hit.Velocity = Vector3.new(math.random(-5,5),20,math.random(-5,5)) 
+end 
+if(hit.Parent:findFirstChild("Humanoid")~= nil)then 
+if hit.Parent:FindFirstChild("Humanoid") ~= nil and hit.Name ~= "Base" and hit.Parent.Name ~= Player.Name then 
+	hit.Parent.Humanoid.BreakJointsOnDeath = false
+hit.Parent.Humanoid:TakeDamage(Dmg) 
+if hit.Parent.Humanoid.Health == 0 then
+	ragdoll(hit.Parent.Humanoid)
+end
+
+end 
+end 
+--[[if hit.className == "Part" and hit.Parent:findFirstChild("Humanoid") == nil then 
+end ]] 
+end 
+end 
+
+function attackone()
+		attack=true
+		for i=0,1,0.1 do
+			swait()
+			RW.C0=clerp(RW.C0,cf(1.5,0.5,0)*angles(math.rad(90),math.rad(0),math.rad(50)),.3)
+			LW.C0=clerp(LW.C0,cf(-1.5,0.5,0)*angles(math.rad(50),math.rad(30),math.rad(-50)),.3)
+			Torso.Neck.C0=clerp(Torso.Neck.C0,necko*angles(math.rad(0),math.rad(0),math.rad(-50)),.3)
+            RootJoint.C0=clerp(RootJoint.C0,RootCF*cf(0,0,0)*angles(math.rad(0),math.rad(0),math.rad(50)),.3)
+		end
+		Laser(BarrelA,20)
+			so("http://www.roblox.com/asset/?id=149155476",Torso,1,1) 
+		for i=0,1,0.2 do
+			swait()
+			RW.C0=clerp(RW.C0,cf(1.5,0.5,0)*angles(math.rad(120),math.rad(50),math.rad(50)),.3)
+			LW.C0=clerp(LW.C0,cf(-1.5,0.5,0)*angles(math.rad(50),math.rad(30),math.rad(-50)),.3)
+			Torso.Neck.C0=clerp(Torso.Neck.C0,necko*angles(math.rad(-5),math.rad(10),math.rad(-50)),.3)
+            RootJoint.C0=clerp(RootJoint.C0,RootCF*cf(0,0,0)*angles(math.rad(0),math.rad(0),math.rad(50)),.3)
+		end
+		attack=false
+end
+
+function attacktwo()
+		attack=true
+		for i=0,1,0.1 do
+			swait()
+			RW.C0=clerp(RW.C0,cf(1.5,0.5,0)*angles(math.rad(-50),math.rad(30),math.rad(50)),.3)
+			LW.C0=clerp(LW.C0,cf(-1.5,0.5,0)*angles(math.rad(90),math.rad(0),math.rad(-50)),.3)
+			--LW.C0=clerp(LW.C0,cf(-1.5,0.5,0)*angles(math.rad(50),math.rad(30),math.rad(-50)),.3)
+			--RW.C0=clerp(RW.C0,cf(1.5,0.5,0)*angles(math.rad(90),math.rad(0),math.rad(50)),.3)
+			Torso.Neck.C0=clerp(Torso.Neck.C0,necko*angles(math.rad(0),math.rad(0),math.rad(50)),.3)
+            RootJoint.C0=clerp(RootJoint.C0,RootCF*cf(0,0,0)*angles(math.rad(0),math.rad(0),math.rad(-50)),.3)
+		end
+		Laser(BarrelB,20)
+			so("http://www.roblox.com/asset/?id=149155476",Torso,1,1) 
+		for i=0,1,0.2 do
+			swait()
+			RW.C0=clerp(RW.C0,cf(1.5,0.5,0)*angles(math.rad(-50),math.rad(30),math.rad(50)),.3)
+			LW.C0=clerp(LW.C0,cf(-1.5,0.5,0)*angles(math.rad(120),math.rad(-50),math.rad(-50)),.3)
+			--RW.C0=clerp(RW.C0,cf(1.5,0.5,0)*angles(math.rad(120),math.rad(50),math.rad(50)),.3)
+			--LW.C0=clerp(LW.C0,cf(-1.5,0.5,0)*angles(math.rad(50),math.rad(30),math.rad(-50)),.3)
+			Torso.Neck.C0=clerp(Torso.Neck.C0,necko*angles(math.rad(-5),math.rad(-10),math.rad(50)),.3)
+            RootJoint.C0=clerp(RootJoint.C0,RootCF*cf(0,0,0)*angles(math.rad(0),math.rad(0),math.rad(-50)),.3)
+		end
+		attack=false
+	end
+
+function attackthree()
+	attack=true
+	for i=0,1,0.1 do
+			swait()
+			RW.C0=clerp(RW.C0,cf(1,0.5,-1)*angles(math.rad(90),math.rad(0),math.rad(-50)),.3)
+            LW.C0=clerp(LW.C0,cf(-1.5,0.5,0)*angles(math.rad(90),math.rad(0),math.rad(-50)),.3)
+			Torso.Neck.C0=clerp(Torso.Neck.C0,necko*angles(math.rad(0),math.rad(0),math.rad(50)),.3)
+            RootJoint.C0=clerp(RootJoint.C0,RootCF*cf(0,0,0)*angles(math.rad(0),math.rad(0),math.rad(-50)),.3)
+		end
+	for i=0,1,0.2 do
+			swait()
+					Laser(BarrelA,20)
+					Laser(BarrelB,20)
+		so("http://www.roblox.com/asset/?id=149155476",Torso,1,1) 
+			RW.C0=clerp(RW.C0,cf(1,0.5,-1)*angles(math.rad(100),math.rad(-10),math.rad(-50)),.3)
+			LW.C0=clerp(LW.C0,cf(-1.5,0.5,0)*angles(math.rad(100),math.rad(-10),math.rad(-50)),.3)
+			Torso.Neck.C0=clerp(Torso.Neck.C0,necko*angles(math.rad(-5),math.rad(-10),math.rad(50)),.3)
+            RootJoint.C0=clerp(RootJoint.C0,RootCF*cf(0,0,0)*angles(math.rad(0),math.rad(0),math.rad(-50)),.3)
+		end
+	attack=false
+end
+
+mouse.Button1Down:connect(function()
+	if attack==false then
+		if attacktype==1 then
+			attack=true
+			attacktype=2
+			attackone()
+		elseif attacktype==2 then
+			attack=true
+			attacktype=3
+			attacktwo()
+			elseif attacktype==3 then
+			attack=true
+			attacktype=1
+			attackthree()
+		end
+	end
 end)
 
-end))
-Sound26.Parent = ImageButton24
-Part27.Name = "Gun Chasis"
-Part27.Parent = Tool0
-Part27.CFrame = CFrame.new(-66.2647095, 0.172041893, -53.335144, 0.0326500088, 0.00772200851, -0.999437094, -0.00114100019, 0.99996978, 0.00768885063, 0.99946624, 0.000889316725, 0.0326578319)
-Part27.Orientation = Vector3.new(-0.4410000145435333, -88.12799835205078, -0.06499999761581421)
-Part27.Position = Vector3.new(-66.26470947265625, 0.1720418930053711, -53.33514404296875)
-Part27.Rotation = Vector3.new(-13.248000144958496, -88.0770034790039, -13.305999755859375)
-Part27.Size = Vector3.new(0.20000000298023224, 0.46666666865348816, 0.20000000298023224)
-Part27.Anchored = true
-Part27.BottomSurface = Enum.SurfaceType.Smooth
-Part27.CanCollide = false
-Part27.TopSurface = Enum.SurfaceType.Smooth
-Part27.FormFactor = Enum.FormFactor.Custom
-Part27.formFactor = Enum.FormFactor.Custom
-SpecialMesh28.Parent = Part27
-SpecialMesh28.MeshId = "rbxassetid://431299113"
-SpecialMesh28.Scale = Vector3.new(0.003000000026077032, 0.003000000026077032, 0.003000000026077032)
-SpecialMesh28.TextureId = "rbxassetid://431299196"
-SpecialMesh28.MeshType = Enum.MeshType.FileMesh
-Part29.Name = "Handle"
-Part29.Parent = Tool0
-Part29.CFrame = CFrame.new(-65.3506775, 0.0999999046, -53.3502808, 0, 0, 1, 0, 1, -0, -1, 0, 0)
-Part29.Orientation = Vector3.new(0, 90, 0)
-Part29.Position = Vector3.new(-65.35067749023438, 0.09999990463256836, -53.35028076171875)
-Part29.Rotation = Vector3.new(0, 90, 0)
-Part29.Color = Color3.new(0.388235, 0.372549, 0.384314)
-Part29.Transparency = 1
-Part29.Size = Vector3.new(0.20000000298023224, 0.20000000298023224, 0.20000000298023224)
-Part29.Anchored = true
-Part29.BottomSurface = Enum.SurfaceType.Smooth
-Part29.BrickColor = BrickColor.new("Dark stone grey")
-Part29.CanCollide = false
-Part29.TopSurface = Enum.SurfaceType.Smooth
-Part29.brickColor = BrickColor.new("Dark stone grey")
-Part29.FormFactor = Enum.FormFactor.Custom
-Part29.formFactor = Enum.FormFactor.Custom
-BlockMesh30.Parent = Part29
-BlockMesh30.Scale = Vector3.new(0.1666666716337204, 0.555555522441864, 0.1666666716337204)
-Sound31.Name = "EquipSound"
-Sound31.Parent = Part29
-Sound31.Volume = 0.4000000059604645
-Sound32.Name = "EquipSound2"
-Sound32.Parent = Part29
-Sound32.SoundId = "rbxassetid://169799883"
-Sound32.Volume = 1
-Sound33.Name = "FireSound"
-Sound33.Parent = Part29
-Sound33.SoundId = "rbxassetid://174295284"
-Sound33.Volume = 0.30000001192092896
-Sound34.Name = "Reload"
-Sound34.Parent = Part29
-Sound34.SoundId = "rbxassetid://142491708"
-Sound34.Volume = 1
-Sound35.Name = "Tick"
-Sound35.Parent = Part29
-Sound35.SoundId = "rbxassetid://154255000"
-Sound35.Volume = 1
-Sound36.Name = "UnequipSound"
-Sound36.Parent = Part29
-Sound36.Pitch = 1.5
-Sound36.PlaybackSpeed = 1.5
-Sound36.SoundId = "http://www.roblox.com/asset/?id=169310310"
-Sound36.Volume = 0.30000001192092896
-PointLight37.Name = "Flash"
-PointLight37.Parent = Part29
-PointLight37.Color = Color3.new(1, 0.568627, 0.192157)
-PointLight37.Enabled = false
-PointLight37.Shadows = true
-Smoke38.Parent = Part29
-Smoke38.Color = Color3.new(0.392157, 0.392157, 0.392157)
-Smoke38.Enabled = false
-Smoke38.Size = 0.10000000149011612
-Smoke38.Opacity = 0.10000000149011612
-Smoke38.RiseVelocity = 4
-Part39.Name = "Flare"
-Part39.Parent = Tool0
-Part39.CFrame = CFrame.new(-68.7608643, 0.542001963, -53.3302917, 0, 1, 0, 0, 0, 1, 1, 0, 0)
-Part39.Orientation = Vector3.new(-90, -90, 0)
-Part39.Position = Vector3.new(-68.7608642578125, 0.5420019626617432, -53.330291748046875)
-Part39.Rotation = Vector3.new(-90, 0, -90)
-Part39.Color = Color3.new(0.854902, 0.521569, 0.254902)
-Part39.Transparency = 1
-Part39.Size = Vector3.new(0.20000000298023224, 0.20000000298023224, 0.20000000298023224)
-Part39.Anchored = true
-Part39.BottomSurface = Enum.SurfaceType.Smooth
-Part39.BrickColor = BrickColor.new("Bright orange")
-Part39.CanCollide = false
-Part39.TopSurface = Enum.SurfaceType.Smooth
-Part39.brickColor = BrickColor.new("Bright orange")
-Part39.FormFactor = Enum.FormFactor.Custom
-Part39.formFactor = Enum.FormFactor.Custom
-SpecialMesh40.Parent = Part39
-SpecialMesh40.Scale = Vector3.new(1.5, 2.8333332538604736, 1.5)
-SpecialMesh40.MeshType = Enum.MeshType.Sphere
-BillboardGui41.Name = "MuzzleFlash"
-BillboardGui41.Parent = Part39
-BillboardGui41.Enabled = false
-BillboardGui41.Size = UDim2.new(2, 0, 2, 0)
-ImageLabel42.Name = "Img"
-ImageLabel42.Parent = BillboardGui41
-ImageLabel42.Size = UDim2.new(1, 0, 1, 0)
-ImageLabel42.BackgroundTransparency = 1
-ImageLabel42.Image = "http://www.roblox.com/asset/?ID=103804383"
-Script43.Parent = ImageLabel42
-table.insert(cors,sandbox(Script43,function()
-local imgs = {103740493,103804266,103804383}
-for _,v in pairs(imgs) do
-	game:GetService("ContentProvider"):Preload("http://www.roblox.com/asset/?ID="..v)
-end
-
-script.Parent.Parent.Changed:connect(function ()
-	if script.Parent.Parent.Enabled == true then
-		wait(0.09)
-		script.Parent.Parent.Enabled = false
-	end
+mouse.KeyDown:connect(function(k)
+	k=k:lower()
+	
 end)
 
-while true do
-	for i = 1,#imgs do
-		script.Parent.Image = "http://www.roblox.com/asset/?ID="..imgs[i]
-		wait(0.03)
-	end
-end
 
-end))
-LocalScript44.Name = "AnimationScript"
-LocalScript44.Parent = Tool0
-table.insert(cors,sandbox(LocalScript44,function()
--- Waits for the child of the specified parent
-local function WaitForChild(parent, childName)
-	while not parent:FindFirstChild(childName) do parent.ChildAdded:wait() end
-	return parent[childName]
-end
-
-local Tool = script.Parent
-
-local Animations = {}
-local MyHumanoid
-local MyCharacter
-
-
-local function PlayAnimation(animationName)
-	if Animations[animationName] then
-		Animations[animationName]:Play()
-	end
-end
-
-local function StopAnimation(animationName)
-	if Animations[animationName] then
-		Animations[animationName]:Stop()
-	end
-end
-
-
-function OnEquipped(mouse)
-	MyCharacter = Tool.Parent
-	MyHumanoid = WaitForChild(MyCharacter, 'Humanoid')
-	if MyHumanoid then
-		Animations['EquipAnim'] = MyHumanoid:LoadAnimation(WaitForChild(Tool, 'EquipAnim5'))
-		Animations['IdleAnim'] = MyHumanoid:LoadAnimation(WaitForChild(Tool, 'IdleAnim3'))
-		Animations['OverheadAnim'] = MyHumanoid:LoadAnimation(WaitForChild(Tool, 'OverheadAnim2'))
-		Animations['SlashAnim'] = MyHumanoid:LoadAnimation(WaitForChild(Tool, 'SlashAnim2'))
-		Animations['ThrustAnim'] = MyHumanoid:LoadAnimation(WaitForChild(Tool, 'ThrustAnim2'))
-		Animations['UnequipAnim'] = MyHumanoid:LoadAnimation(WaitForChild(Tool, 'UnequipAnim2'))
-	end
-	PlayAnimation('EquipAnim')
-	PlayAnimation('IdleAnim')
-end
-
-function OnUnequipped()
-	for animName, _ in pairs(Animations) do
-		StopAnimation(animName)
-	end
-end
-
-Tool.Equipped:connect(OnEquipped)
-Tool.Unequipped:connect(OnUnequipped)
-
-WaitForChild(Tool, 'PlaySlash').Changed:connect(
-	function (value)
-		--if value then
-			PlayAnimation('SlashAnim')
-		--else
-		--	StopAnimation('SlashAnim')
-		--end
-	end)
-
-WaitForChild(Tool, 'PlayThrust').Changed:connect(
-	function (value)
-		--if value then
-			PlayAnimation('ThrustAnim')
-		--else
-		--	StopAnimation('ThrustAnim')
-		--end
-	end)
-
-WaitForChild(Tool, 'PlayOverhead').Changed:connect(
-	function (value)
-		--if value then
-			PlayAnimation('OverheadAnim')
-		--else
-		--	StopAnimation('OverheadAnim')
-		--end
-	end)
-
-end))
-LocalScript45.Name = "BackupWeld"
-LocalScript45.Parent = Tool0
-table.insert(cors,sandbox(LocalScript45,function()
-function Weld(x,y)
-	local W = Instance.new("Weld")
-	W.Part0 = x
-	W.Part1 = y
-	local CJ = CFrame.new(x.Position)
-	local C0 = x.CFrame:inverse()*CJ
-	local C1 = y.CFrame:inverse()*CJ
-	W.C0 = C0
-	W.C1 = C1
-	W.Parent = x
-end
-
-function Get(A)
-	if A.className == "Part" then
-		Weld(script.Parent.Handle, A)
-		A.Anchored = false
-	else
-		local C = A:GetChildren()
-		for i=1, #C do
-		Get(C[i])
-		end
-	end
-end
-
-function Finale()
-	Get(script.Parent)
-end
-
-script.Parent.Equipped:connect(Finale)
-script.Parent.Unequipped:connect(Finale)
-Finale()
-end))
-LocalScript46.Name = "HandgunScript"
-LocalScript46.Parent = Tool0
-table.insert(cors,sandbox(LocalScript46,function()
---------------------- TEMPLATE WEAPON ---------------------------
---edited by DestinyHarbinger
--- Waits for the child of the specified parent
-local function WaitForChild(parent, childName)
-	while not parent:FindFirstChild(childName) do parent.ChildAdded:wait() end
-	return parent[childName]
-end
-
------ TOOL DATA -----
--- How much damage a bullet does
-local Damage = 14
--- How many times per second the gun can fire
-local FireRate = 0.12 / 1
--- The maximum distance the can can shoot, this value should never go above 1000
-local Range = 350
--- In radians the minimum accuracy penalty
-local MinSpread = 0.008
--- In radian the maximum accuracy penalty
-local MaxSpread = 0.06
--- Number of bullets in a clip
-local ClipSize = 30
--- DefaultValue for spare ammo
-local SpareAmmo = 2100
--- The amount the aim will increase or decrease by
--- decreases this number reduces the speed that recoil takes effect
-local AimInaccuracyStepAmount = .15
--- Time it takes to reload weapon
-local ReloadTime = 2.04
-----------------------------------------
-
--- Colors
-local FriendlyReticleColor = Color3.new(0, 1, 0)
-local EnemyReticleColor	= Color3.new(1, 0, 0)
-local NeutralReticleColor	= Color3.new(1, 1, 1)
-
-local Spread = MinSpread
-local AmmoInClip = ClipSize
-
-local Tool = script.Parent
-local Handle = WaitForChild(Tool, 'Handle')
-local Barrel = WaitForChild(Tool, 'Flare')
-local WeaponGui = nil
-
-local LeftButtonDown
-local Reloading = false
-local IsShooting = false
-local Pitch = script.Parent.Handle.FireSound
-
--- Player specific convenience variables
-local MyPlayer = nil
-local MyCharacter = nil
-local MyHumanoid = nil
-local MyTorso = nil
-local MyMouse = nil
-
-
-local RecoilAnim
-local RecoilTrack = nil
-
-local ReloadAnim
-local ReloadTrack = nil
-
-local IconURL = Tool.TextureId  
-local DebrisService = game:GetService('Debris')
-local PlayersService = game:GetService('Players')
-
-
-local FireSound
-
-local OnFireConnection = nil
-local OnReloadConnection = nil
-
-local DecreasedAimLastShot = false
-local LastSpreadUpdate = time()
-
-local flare = script.Parent:WaitForChild("Flare")
-
-local FlashHolder = nil
-
-
-local WorldToCellFunction = Workspace.Terrain.WorldToCellPreferSolid
-local GetCellFunction = Workspace.Terrain.GetCell
-
-function RayIgnoreCheck(hit, pos)
-	if hit then
-		if hit.Transparency >= 1 or string.lower(hit.Name) == "water" or
-				hit.Name == "Effect" or hit.Name == "Rocket" or hit.Name == "Bullet" or
-				hit.Name == "Handle" or hit:IsDescendantOf(MyCharacter) then
-			return true
-		elseif hit:IsA('Terrain') and pos then
-			local cellPos = WorldToCellFunction(Workspace.Terrain, pos)
-			if cellPos then
-				local cellMat = GetCellFunction(Workspace.Terrain, cellPos.x, cellPos.y, cellPos.z)
-				if cellMat and cellMat == Enum.CellMaterial.Water then
-					return true
-				end
-			end
-		end
-	end
-	return false
-end
-
---vec should be a unit vector, and 0 < rayLength <= 1000
-function RayCast(startPos, vec, rayLength)
-	local hitObject, hitPos = game.Workspace:FindPartOnRay(Ray.new(startPos + (vec * .01), vec * rayLength), Handle)
-	if hitObject and hitPos then
-		local distance = rayLength - (hitPos - startPos).magnitude
-		if RayIgnoreCheck(hitObject, hitPos) and distance > 0 then
-			-- there is a chance here for potential infinite recursion
-			return RayCast(hitPos, vec, distance)
-		end
-	end
-	return hitObject, hitPos
-end
-
-
-
-function TagHumanoid(humanoid, player)
-	-- Add more tags here to customize what tags are available.
-	while humanoid:FindFirstChild('creator') do
-		humanoid:FindFirstChild('creator'):Destroy()
-	end 
-	local creatorTag = Instance.new("ObjectValue")
-	creatorTag.Value = player
-	creatorTag.Name = "creator"
-	creatorTag.Parent = humanoid
-	DebrisService:AddItem(creatorTag, 1.5)
-
-	local weaponIconTag = Instance.new("StringValue")
-	weaponIconTag.Value = IconURL
-	weaponIconTag.Name = "icon"
-	weaponIconTag.Parent = creatorTag
-end
-
-
-local function CreateBullet(bulletPos)
-	local bullet = Instance.new('Part', Workspace)
-	bullet.FormFactor = Enum.FormFactor.Custom
-	bullet.Size = Vector3.new(0.1, 0.1, 0.1)
-	bullet.BrickColor = BrickColor.new("Black")
-	bullet.Shape = Enum.PartType.Block
-	bullet.CanCollide = false
-	bullet.CFrame = CFrame.new(bulletPos)
-	bullet.Anchored = true
-	bullet.TopSurface = Enum.SurfaceType.Smooth
-	bullet.BottomSurface = Enum.SurfaceType.Smooth
-	bullet.Name = 'Bullet'
-	DebrisService:AddItem(bullet, 2.5)
-	
-	local shell = Instance.new("Part")
-	shell.CFrame = Tool.Handle.CFrame * CFrame.fromEulerAnglesXYZ(1.5,0,0)
-	shell.Size = Vector3.new(0,0,0)
-	shell.BrickColor = BrickColor.new(226)
-	shell.Parent = game.Workspace
-	shell.CFrame = script.Parent.Handle.CFrame
-	shell.CanCollide = false
-	shell.Transparency = 0
-	shell.BottomSurface = 0
-	shell.TopSurface = 0
-	shell.Name = "Shell"
-	shell.Velocity = Tool.Handle.CFrame.lookVector * 35 + Vector3.new(math.random(-10,10),20,math.random(-10,20))
-	shell.RotVelocity = Vector3.new(0,200,0)
-	DebrisService:AddItem(shell, 1)
-
-	local shellmesh = Instance.new("SpecialMesh")
-	shellmesh.Scale = Vector3.new(0,0,0)
-	shellmesh.Parent = shell
-	
-	return bullet
-end
-
-local function Reload()
-	if not Reloading then
-		Reloading = true
-		-- Don't reload if you are already full or have no extra ammo
-		if AmmoInClip ~= ClipSize and SpareAmmo > 0 then
-			if RecoilTrack then
-				RecoilTrack:Stop()
-			end
-			if WeaponGui and WeaponGui:FindFirstChild('Crosshair') then
-				if WeaponGui.Crosshair:FindFirstChild('ReloadingLabel') then
-					WeaponGui.Crosshair.ReloadingLabel.Visible = true
-				end
-			end
-			if ReloadTrack then
-				ReloadTrack:Play()
-			end
-			script.Parent.Handle.Reload:Play()
-			wait(ReloadTime)
-			-- Only use as much ammo as you have
-			local ammoToUse = math.min(ClipSize - AmmoInClip, SpareAmmo)
-			AmmoInClip = AmmoInClip + ammoToUse
-			SpareAmmo = SpareAmmo - ammoToUse
-			UpdateAmmo(AmmoInClip)
-			--WeaponGui.Reload.Visible = false
-			if ReloadTrack then
-				ReloadTrack:Stop()
-			end
-		end
-		Reloading = false
-	end
-end
-
-function OnFire()
-	if IsShooting then return end
-	if MyHumanoid and MyHumanoid.Health > 0 then
-		if RecoilTrack and AmmoInClip > 0 then
-			RecoilTrack:Play()
-		end
-		IsShooting = true
-		while LeftButtonDown and AmmoInClip > 0 and not Reloading do
-			if Spread and not DecreasedAimLastShot then
-				Spread = math.min(MaxSpread, Spread + AimInaccuracyStepAmount)
-				UpdateCrosshair(Spread)
-			end
-			DecreasedAimLastShot = not DecreasedAimLastShot
-			if Handle:FindFirstChild('FireSound') then
-				Pitch.Pitch = 1
-				Handle.FireSound:Play()
-				Handle.Flash.Enabled = true
-				flare.MuzzleFlash.Enabled = true
-				--Handle.Smoke.Enabled=true --This is optional
-			end
-			if MyMouse then
-				local targetPoint = MyMouse.Hit.p
-				local shootDirection = (targetPoint - Barrel.Position).unit
-				-- Adjust the shoot direction randomly off by a little bit to account for recoil
-				shootDirection = CFrame.Angles((0.5 - math.random()) * 2 * Spread,
-																(0.5 - math.random()) * 2 * Spread,
-																(0.5 - math.random()) * 2 * Spread) * shootDirection
-				local hitObject, bulletPos = RayCast(Barrel.Position, shootDirection, Range)
-				local bullet
-				-- Create a bullet here
-				if hitObject then
-					bullet = CreateBullet(bulletPos)
-				end
-				if hitObject and hitObject.Parent then
-					local hitHumanoid = hitObject.Parent:FindFirstChild("Humanoid")
-					if hitHumanoid then
-						local hitPlayer = game.Players:GetPlayerFromCharacter(hitHumanoid.Parent)
-						if hitObject then
-							TagHumanoid(hitHumanoid, MyPlayer)
-							hitHumanoid:TakeDamage(Damage)
-							if bullet then
-								bullet:Destroy()
-								bullet = nil
-								WeaponGui.Crosshair.Hit:Play()
-								--bullet.Transparency = 1
-							end
-							Spawn(UpdateTargetHit)
-						end
-					end
-				end
-				AmmoInClip = AmmoInClip - 1
-				UpdateAmmo(AmmoInClip)
-			end
-			wait(FireRate)
-		end
-		Handle.Flash.Enabled = false
-		IsShooting = false
-		flare.MuzzleFlash.Enabled = false
-		--Handle.Smoke.Enabled=false --This is optional
-		if AmmoInClip == 0 then
-			Handle.Tick:Play()
-			--WeaponGui.Reload.Visible = true
-			Reload()
-		end
-		if RecoilTrack then
-			RecoilTrack:Stop()
-		end
-	end
-end
-
-local TargetHits = 0
-function UpdateTargetHit()
-	TargetHits = TargetHits + 1
-	if WeaponGui and WeaponGui:FindFirstChild('Crosshair') and WeaponGui.Crosshair:FindFirstChild('TargetHitImage') then
-		WeaponGui.Crosshair.TargetHitImage.Visible = true
-	end
-	wait(0.5)
-	TargetHits = TargetHits - 1
-	if TargetHits == 0 and WeaponGui and WeaponGui:FindFirstChild('Crosshair') and WeaponGui.Crosshair:FindFirstChild('TargetHitImage') then
-		WeaponGui.Crosshair.TargetHitImage.Visible = false
-	end
-end
-
-function UpdateCrosshair(value, mouse)
-	if WeaponGui then
-		local absoluteY = 650
-		WeaponGui.Crosshair:TweenSize(
-			UDim2.new(0, value * absoluteY * 2 + 23, 0, value * absoluteY * 2 + 23),
-			Enum.EasingDirection.Out,
-			Enum.EasingStyle.Linear,
-			0.33)
-	end
-end
-
-function UpdateAmmo(value)
-	if WeaponGui and WeaponGui:FindFirstChild('AmmoHud') and WeaponGui.AmmoHud:FindFirstChild('ClipAmmo') then
-		WeaponGui.AmmoHud.ClipAmmo.Text = AmmoInClip
-		if value > 0 and WeaponGui:FindFirstChild('Crosshair') and WeaponGui.Crosshair:FindFirstChild('ReloadingLabel') then
-			WeaponGui.Crosshair.ReloadingLabel.Visible = false
-		end
-	end
-	if WeaponGui and WeaponGui:FindFirstChild('AmmoHud') and WeaponGui.AmmoHud:FindFirstChild('TotalAmmo') then
-		WeaponGui.AmmoHud.TotalAmmo.Text = SpareAmmo
-	end
-end
-
-
-function OnMouseDown()
-	LeftButtonDown = true
-	OnFire()
-end
-
-function OnMouseUp()
-	LeftButtonDown = false
-end
-
-function OnKeyDown(key)
-	if string.lower(key) == 'r' then
-		Reload()
-		if RecoilTrack then
-			RecoilTrack:Stop()
-		end
-	end
-end
-
-
-function OnEquipped(mouse)
-	Handle.EquipSound:Play()
-	Handle.EquipSound2:Play()
-	Handle.UnequipSound:Stop()
-	RecoilAnim = WaitForChild(Tool, 'Recoil')
-	ReloadAnim = WaitForChild(Tool, 'Reload')
-	FireSound  = WaitForChild(Handle, 'FireSound')
-
-	MyCharacter = Tool.Parent
-	MyPlayer = game:GetService('Players'):GetPlayerFromCharacter(MyCharacter)
-	MyHumanoid = MyCharacter:FindFirstChild('Humanoid')
-	MyTorso = MyCharacter:FindFirstChild('Torso')
-	MyMouse = mouse
-	Tip = WaitForChild(Tool, 'DonateGui'):Clone()
-	if Tip and MyPlayer then
-		Tip.Parent = MyPlayer.PlayerGui
-		end
-	WeaponGui = WaitForChild(Tool, 'WeaponHud'):Clone()
-	if WeaponGui and MyPlayer then
-		WeaponGui.Parent = MyPlayer.PlayerGui
-		UpdateAmmo(AmmoInClip)
-	end
-	
-	if RecoilAnim then
-		RecoilTrack = MyHumanoid:LoadAnimation(RecoilAnim)
-	end
-	
-	if ReloadAnim then
-		ReloadTrack = MyHumanoid:LoadAnimation(ReloadAnim)
-	end
-
-	if MyMouse then
-		-- Disable mouse icon
-		MyMouse.Icon = "http://www.roblox.com/asset/?id=18662154"
-		MyMouse.Button1Down:connect(OnMouseDown)
-		MyMouse.Button1Up:connect(OnMouseUp)
-		MyMouse.KeyDown:connect(OnKeyDown)
-	end
-end
-
-
--- Unequip logic here
-function OnUnequipped()
-	Handle.UnequipSound:Play()
-	Handle.EquipSound:Stop()
-	Handle.EquipSound2:Stop()
-	LeftButtonDown = false
-	flare.MuzzleFlash.Enabled = false
-	Reloading = false
-	MyCharacter = nil
-	MyHumanoid = nil
-	MyTorso = nil
-	MyPlayer = nil
-	MyMouse = nil
-	if OnFireConnection then
-		OnFireConnection:disconnect()
-	end
-	if OnReloadConnection then
-		OnReloadConnection:disconnect()
-	end
-	if FlashHolder then
-		FlashHolder = nil
-	end
-	if WeaponGui then
-		WeaponGui.Parent = nil
-		WeaponGui = nil
-	end
-	if Tip then
-		Tip.Parent = nil
-		Tip = nil
-	end
-	if RecoilTrack then
-		RecoilTrack:Stop()
-	end
-	if ReloadTrack then
-		ReloadTrack:Stop()
-	end
-end
-
-local function SetReticleColor(color)
-	if WeaponGui and WeaponGui:FindFirstChild('Crosshair') then
-		for _, line in pairs(WeaponGui.Crosshair:GetChildren()) do
-			if line:IsA('Frame') then
-				line.BorderColor3 = color
-			end
-		end
-	end
-end
-
-
-Tool.Equipped:connect(OnEquipped)
-Tool.Unequipped:connect(OnUnequipped)
+local sine = 0
+local change = 1
+local val = 0
 
 while true do
-	wait(0.033)
-	if WeaponGui and WeaponGui:FindFirstChild('Crosshair') and MyMouse then
-		WeaponGui.Crosshair.Position = UDim2.new(0, MyMouse.X, 0, MyMouse.Y)
-		SetReticleColor(NeutralReticleColor)
-
-		local target = MyMouse.Target
-		if target and target.Parent then
-			local player = PlayersService:GetPlayerFromCharacter(target.Parent)
-			if player then
-				if MyPlayer.Neutral or player.TeamColor ~= MyPlayer.TeamColor then
-					SetReticleColor(EnemyReticleColor)
-				else
-					SetReticleColor(FriendlyReticleColor)
-				end
-			end
-		end
-	end
-	if Spread and not IsShooting then
-		local currTime = time()
-		if currTime - LastSpreadUpdate > FireRate * 2 then
-			LastSpreadUpdate = currTime
-			Spread = math.max(MinSpread, Spread - AimInaccuracyStepAmount)
-			UpdateCrosshair(Spread, MyMouse)
-		end
-	end
+swait()
+sine = sine + change
+local torvel=(RootPart.Velocity*Vector3.new(1,0,1)).magnitude 
+local velderp=RootPart.Velocity.y
+hitfloor,posfloor=rayCast(RootPart.Position,(CFrame.new(RootPart.Position,RootPart.Position - Vector3.new(0,1,0))).lookVector,4,Character)
+if equipped==true or equipped==false then
+if attack==false then
+idle=idle+1
+else
+idle=0
 end
-
-end))
-Animation47.Name = "Crawl"
-Animation47.Parent = Tool0
-Animation47.AnimationId = "http://www.roblox.com/asset?id=182749109"
-Animation48.Name = "Reload"
-Animation48.Parent = Tool0
-Animation48.AnimationId = "rbxassetid://582576744"
-for i,v in pairs(mas:GetChildren()) do
-	v.Parent = owner.Backpack
-	pcall(function() v:MakeJoints() end)
+if idle>=500 then
+if attack==false then
+--Sheath()
 end
-mas:Destroy()
-for i,v in pairs(cors) do
-	spawn(function()
-		pcall(v)
-	end)
+end
+if RootPart.Velocity.y > 1 and hitfloor==nil then 
+Anim="Jump"
+if attack==false then
+end
+elseif RootPart.Velocity.y < -1 and hitfloor==nil then 
+Anim="Fall"
+if attack==false then
+end
+elseif torvel<1 and hitfloor~=nil then
+Anim="Idle"
+if attack==false then
+RW.C0=clerp(RW.C0,cf(1,0.5,-1)*angles(math.rad(90),math.rad(0),math.rad(-50)),.3)
+LW.C0=clerp(LW.C0,cf(-1.5,0.5,0)*angles(math.rad(90),math.rad(0),math.rad(-50)),.3)
+Torso.Neck.C0=clerp(Torso.Neck.C0,necko*angles(math.rad(0),math.rad(0),math.rad(50)),.3)
+RootJoint.C0=clerp(RootJoint.C0,RootCF*cf(0,0,0)*angles(math.rad(0),math.rad(0),math.rad(-50)),.3)
+end
+elseif torvel>2 and torvel<22 and hitfloor~=nil then
+Anim="Walk"
+if attack==false then
+change=3
+RW.C0=clerp(RW.C0,cf(.8,0.5,-1)*angles(math.rad(50),math.rad(30),math.rad(-50)),.3)
+LW.C0=clerp(LW.C0,cf(-1.5,0.5,0)*angles(math.rad(50),math.rad(30),math.rad(-50)),.3)
+Torso.Neck.C0=clerp(Torso.Neck.C0,necko*angles(math.rad(-10),math.rad(-10),math.rad(50)),.3)
+RootJoint.C0=clerp(RootJoint.C0,RootCF*cf(0,0,0)*angles(math.rad(20),math.rad(0),math.rad(-50)),.3)
+end
+elseif torvel>=22 and hitfloor~=nil then
+Anim="Run"
+if attack==false then
+end
+end
+end
 end
