@@ -395,7 +395,7 @@ Damagefunc=function(Part,hit,minim,maxim,knockback,Type,Property,Delay,Knockback
                         if game.Players:GetPlayerFromCharacter(hit.Parent)~=nil then
                         return
                 end
--                       hs(hit,1.2) 
+                       hs(hit,1.2) 
                         local c=Instance.new("ObjectValue")
                         c.Name="creator"
                         c.Value=game:service("Players").LocalPlayer
