@@ -727,7 +727,7 @@ OpenGUI.MouseButton1Click:connect(function()
 	MainFrame.Position = SideFrame.Position
 end)
 
-if (game:GetService"Players".LocalPlayer.Character:WaitForChild("Humanoid").RigType == Enum.HumanoidRigType.R15) then
+if (owner.Character:WaitForChild("Humanoid").RigType == Enum.HumanoidRigType.R15) then
 	ScrollingFrame.Visible = false
 	ScrollingFrameR15.Visible = true
 	CheckR.Text = "Showing R15 Animations"
