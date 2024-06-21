@@ -322,12 +322,6 @@ coroutine.wrap(function()
 		Torso.BrickColor = BrickColor.new("Really black")
 		LeftLeg.BrickColor = BrickColor.new("Really black")
 		RightLeg.BrickColor = BrickColor.new("Really black")
-		Character["Right Arm"].Transparency = 1
-		Character["Left Arm"].Transparency = 1
-		Character["Right Leg"].Transparency = 1
-		Character["Left Leg"].Transparency = 1
-		Character["Torso"].Transparency = 1
-		Character["Head"].Transparency = 1
 	end
 end)()
 godmode = coroutine.wrap(function()
