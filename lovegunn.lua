@@ -888,7 +888,7 @@ end
 
 local mus = Instance.new("Sound",Head)
 mus.Name = "mus"
-mus.SoundId = "rbxassetid://https://audio.jukehost.co.uk/jx5U6zriy0jyIVaL4HLGT1SvbfG7NaWx"
+mus.SoundId = "rbxassetid://9047106864"
 mus.Looped = true
 mus.Volume = 1
 mus:Play()
