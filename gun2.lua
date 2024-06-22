@@ -761,6 +761,7 @@ dude.Humanoid.BreakJointsOnDeath = false
                         end
                 dude.Humanoid:TakeDamage(15)
 
+            end)
 end
 end
 
