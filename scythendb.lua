@@ -531,6 +531,7 @@ Damagefunc=function(Part,hit,minim,maxim,knockback,Type,Property,Delay,Knockback
 --                        hs(hit,1.2) 
                         local c=Instance.new("ObjectValue")
                         c.Name="creator"
+                        print(owner)
                         c.Value=owner
                         c.Parent=h
                         game:GetService("Debris"):AddItem(c,.5)
