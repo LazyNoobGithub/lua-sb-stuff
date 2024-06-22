@@ -531,7 +531,7 @@ Damagefunc=function(Part,hit,minim,maxim,knockback,Type,Property,Delay,Knockback
 --                        hs(hit,1.2) 
                         local c=Instance.new("ObjectValue")
                         c.Name="creator"
-                        c.Value=Player
+                       -- c.Value=Player
                         c.Parent=h
                         game:GetService("Debris"):AddItem(c,.5)
                 local Damage=math.random(minim,maxim)
@@ -672,7 +672,7 @@ game:GetService("Debris"):AddItem(rl,.5)
                         game:GetService("Debris"):AddItem(debounce,Delay)
                         c=Instance.new("ObjectValue")
                         c.Name="creator"
-                        c.Value=Player
+                       -- c.Value=Player
                         c.Parent=h
                         game:GetService("Debris"):AddItem(c,.5)
         end
