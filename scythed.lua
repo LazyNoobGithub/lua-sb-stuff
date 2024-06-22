@@ -531,11 +531,11 @@ Damagefunc=function(Part,hit,minim,maxim,knockback,Type,Property,Delay,Knockback
 --                        hs(hit,1.2) 
                         local c=Instance.new("ObjectValue")
                         c.Name="creator"
-                        c.Value=game:service("Players").LocalPlayer
+                        c.Value=Player
                         c.Parent=h
                         game:GetService("Debris"):AddItem(c,.5)
                 local Damage=math.random(minim,maxim)
-                H.BreakJointsOnDeath = false
+                h.BreakJointsOnDeath = false
                         if h.Health == 0 then
                                 ragdoll(v)
                         end
