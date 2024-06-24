@@ -790,9 +790,9 @@ repeat
 so(1145251796,ShotPt,math.random(95,105)/100,3)
 ref.CFrame = Mouse.Hit
 MagnitudeDmg(ref,2)
-Effects.Block(ShotPt.CFrame,Vector3.new(1,1,1),Vector3.new(),Vector3.new(.2,.2,.2),"Neon","Pink",true,false,.1)
-Effects.Block(CFrame.new((ShotPt.Position + Mouse.Hit.p)/2,Mouse.Hit.p),Vector3.new(1,1,(ShotPt.Position - Mouse.Hit.p).magnitude),Vector3.new(.2,.2,1),Vector3.new(.1,.1,0),"Neon","Pink",false,false,.1)
-Effects.Block(Mouse.Hit,Vector3.new(1,1,1),Vector3.new(),Vector3.new(.2,.2,.2),"Neon","Pink",true,false,.1)
+Effects.Block(ShotPt.CFrame,Vector3.new(1,1,1),Vector3.new(),Vector3.new(.2,.2,.2),"Neon","New Yeller",true,false,.1)
+Effects.Block(CFrame.new((ShotPt.Position + Mouse.Hit.p)/2,Mouse.Hit.p),Vector3.new(1,1,(ShotPt.Position - Mouse.Hit.p).magnitude),Vector3.new(.2,.2,1),Vector3.new(.1,.1,0),"Neon","New Yeller",false,false,.1)
+Effects.Block(Mouse.Hit,Vector3.new(1,1,1),Vector3.new(),Vector3.new(.2,.2,.2),"Neon","New Yeller",true,false,.1)
 for i=0,1,.5 do
 swait()
 PlayAnimationFromTable({        
