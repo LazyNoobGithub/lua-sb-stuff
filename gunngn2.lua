@@ -719,19 +719,14 @@ end
 
 function Dmg(dude)
 if dude and dude ~= chara and dude.Name ~= "CKbackup" then
-if dude:FindFirstChild("TURAPPU") then return end
-local debounce = Instance.new("BoolValue",dude)
-debounce.Name = "TURAPPU"
-coroutine.wrap(function()
 local torsy = GetDudesTorso(dude)
-    if torsy then
-        dude.Humanoid.BreakJointsOnDeath = false
-        if dude.Humanoid.Health == 0 then
-                ragdoll(v)
-        end
-     dude.Humanoid:TakeDamage(15)
+if torsy then
+    dude.Humanoid.BreakJointsOnDeath = false
+    if dude.Humanoid.Health == 0 then
+        ragdoll(dude)
     end
-end)
+    dude.Humanoid:TakeDamage(15)
+end
 end
 end
 
