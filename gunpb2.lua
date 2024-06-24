@@ -318,14 +318,14 @@ sou:Destroy()
 end
 
 --This is just for builds--
-New = function(Object, Parent, Name, Data)
-local Object = Instance.new(Object)
-for Index, Value in pairs(Data or {}) do
-Object[Index] = Value
-end
-Object.Parent = Parent
-Object.Name = Name
-return Object
+local chara = workspace.Character New = function(Object, Parent, Name, Data)
+	local Object = Instance.new(Object)
+	for Index, Value in pairs(Data or {}) do
+		Object[Index] = Value
+	end
+	Object.Parent = Parent
+	Object.Name = Name
+	return Object
 end
 LuvGun = New("Model",chara,"LuvGun",{})
 Handle = New("Part",LuvGun,"Handaru",{BrickColor = BrickColor.new("Carnation pink"),Material = Enum.Material.SmoothPlastic,Size = Vector3.new(0.199999809, 1.10000002, 0.50000006),CFrame = CFrame.new(-55.7999725, 3.16094255, -23.6752853, 1, 0, 0, 0, 0.984807849, -0.173647985, 0, 0.173647985, 0.984807849),CanCollide = false,BackSurface = Enum.SurfaceType.SmoothNoOutlines,BottomSurface = Enum.SurfaceType.SmoothNoOutlines,FrontSurface = Enum.SurfaceType.SmoothNoOutlines,LeftSurface = Enum.SurfaceType.SmoothNoOutlines,RightSurface = Enum.SurfaceType.SmoothNoOutlines,TopSurface = Enum.SurfaceType.SmoothNoOutlines,Color = Color3.new(1, 0.596078, 0.862745),})
@@ -359,7 +359,8 @@ Weld = New("ManualWeld",Part,"Weld",{Part0 = Part,Part1 = Handle,C0 = CFrame.new
 Part = New("Part",LuvGun,"Part",{Transparency = 1,Material = Enum.Material.SmoothPlastic,Size = Vector3.new(0.600000024, 0.5, 0.600000024),CFrame = CFrame.new(-55.7999611, 2.79997706, -22.4000034, -1, 0, 0, 0, 1.00000012, 0, 0, 0, -1.00000012),CanCollide = false,BackSurface = Enum.SurfaceType.SmoothNoOutlines,BottomSurface = Enum.SurfaceType.SmoothNoOutlines,FrontSurface = Enum.SurfaceType.SmoothNoOutlines,LeftSurface = Enum.SurfaceType.SmoothNoOutlines,RightSurface = Enum.SurfaceType.SmoothNoOutlines,TopSurface = Enum.SurfaceType.SmoothNoOutlines,})
 Mesh = New("CylinderMesh",Part,"Mesh",{})
 Decal = New("Decal",Part,"Decal",{Face = Enum.NormalId.Left,Texture = "rbxassetid://52650427",})
-Decal = New("Decal",Part,"Decal",{Face = Enum.NormalId.Right,Texture = "rbxassetid://52650427",})
+Decal0 = New("Decal",Part,"Decal",{Face = Enum.NormalId.Right,Texture = "rbxassetid://52650427",})
+Decal0.Name = "LoveHeart"
 Weld = New("ManualWeld",Part,"Weld",{Part0 = Part,Part1 = Handle,C0 = CFrame.new(0, 0, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1),C1 = CFrame.new(1.14440918e-05, -0.134031534, 1.31858826, 1, 0, 0, 0, 0.984807849, 0.173647985, 0, -0.173647985, 0.984807849),})
 Part = New("Part",LuvGun,"Part",{BrickColor = BrickColor.new("Carnation pink"),Material = Enum.Material.SmoothPlastic,Size = Vector3.new(0.100000001, 0.100000001, 0.800000012),CFrame = CFrame.new(-55.7499695, 4.39997292, -20.2000103, 0, 1, 0, 0, 0, -1.00000012, -1.00000012, 0, 0),CanCollide = false,BackSurface = Enum.SurfaceType.SmoothNoOutlines,BottomSurface = Enum.SurfaceType.SmoothNoOutlines,FrontSurface = Enum.SurfaceType.SmoothNoOutlines,LeftSurface = Enum.SurfaceType.SmoothNoOutlines,RightSurface = Enum.SurfaceType.SmoothNoOutlines,TopSurface = Enum.SurfaceType.SmoothNoOutlines,Color = Color3.new(1, 0.596078, 0.862745),})
 Mesh = New("SpecialMesh",Part,"Mesh",{MeshType = Enum.MeshType.Wedge,})
@@ -448,6 +449,18 @@ Part = New("Part",LuvGun,"Part",{BrickColor = BrickColor.new("Carnation pink"),M
 Mesh = New("SpecialMesh",Part,"Mesh",{MeshType = Enum.MeshType.Wedge,})
 Weld = New("ManualWeld",Part,"Weld",{Part0 = Part,Part1 = Handle,C0 = CFrame.new(0, 0, 0, 0, 0, -1, -1, 0, 0, 0, 1, 0),C1 = CFrame.new(-0.199993134, 0.723151445, 2.43672752, 1, 0, 0, 0, 0.984807849, 0.173647985, 0, -0.173647985, 0.984807849),})
 ---------------------------
+for i,v in pairs(LuvGun:GetDescendants()) do 
+local yay,nay = pcall(function() if v.BrickColor then end end) 
+if yay then 
+if v.BrickColor == BrickColor.new("Carnation pink") then 
+v.BrickColor = BrickColor.new("Dark grey metallic") 
+elseif v.BrickColor == BrickColor.new("Pink") then 
+v.BrickColor = BrickColor.new("Black metallic") 
+end 
+end 
+end
+Decal.Texture = "rbxassetid://9986666212"
+Decal0.Texture = "rbxassetid://9986666212"
 
 function rayCast(Position, Direction, Range, Ignore)
 return game:service("Workspace"):FindPartOnRay(Ray.new(Position, Direction.unit * (Range or 999.999)), Ignore) 
@@ -725,7 +738,7 @@ if torsy then
     if dude.Humanoid.Health == 0 then
         ragdoll(dude.Humanoid)
     end
-    dude.Humanoid:TakeDamage(15)
+    dude.Humanoid:TakeDamage(25)
 end
 end
 end
