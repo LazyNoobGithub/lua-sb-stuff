@@ -723,7 +723,7 @@ local torsy = GetDudesTorso(dude)
 if torsy then
     dude.Humanoid.BreakJointsOnDeath = false
     if dude.Humanoid.Health == 0 then
-        ragdoll(dude)
+        ragdoll(dude.Humanoid)
     end
     dude.Humanoid:TakeDamage(15)
 end
