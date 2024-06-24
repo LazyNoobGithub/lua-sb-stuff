@@ -1850,10 +1850,8 @@ for i=1,6 do
 	wait(.1)
 end
 wait(1)
-MoveZPart(o12,1)
-wait(.2)
 for i=1,50 do
-	MoveX(o1,3)
+	MoveX(o1,-3)
 	--game.Players[Victim].Character.HumanoidRootPart.CFrame = o85.CFrame
 	wait(.05)
 end
