@@ -725,43 +725,13 @@ debounce.Name = "TURAPPU"
 coroutine.wrap(function()
 local torsy = GetDudesTorso(dude)
 if torsy then
-local b = Instance.new("Part",dude)
-b.BrickColor = BrickColor.new("Pink")
-b.Size = Vector3.new(.1,.1,.1)
-b.CanCollide = false
-b.Transparency = 1
-b.Material = "Neon"
-b:BreakJoints()
-so(113952851,b,1,3)
-local bw = Instance.new("Weld",b)
-bw.Part0 = b
-bw.Part1 = torsy
-local bm = Instance.new("SpecialMesh",b)
-bm.MeshType = "Sphere"
-bm.Scale = Vector3.new()
-for i=0,1,.05 do
-swait()
-b.Transparency = 1-i
-bm.Scale = Vector3.new(65*i,65*i,65*i)
+    dude.Humanoid.BreakJointsOnDeath = false
+    if dude.Humanoid.Health == 0 then
+            ragdoll(v)
+    end
+dude.Humanoid:TakeDamage(15)
+end)
 end
-coroutine.wrap(function()
-swait(20)
-for i=0,1,.05 do
-swait()
-b.Transparency = i
-bm.Scale = Vector3.new(65+100*i,65+100*i,65+100*i)
-end
-b:Destroy()
-end)()
-end
-
-dude.Humanoid.BreakJointsOnDeath = false
-                        if dude.Humanoid.Health == 0 then
-                                ragdoll(v)
-                        end
-                dude.Humanoid:TakeDamage(15)
-
-            end)
 end
 end
 
