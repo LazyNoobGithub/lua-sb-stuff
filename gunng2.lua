@@ -724,14 +724,14 @@ local debounce = Instance.new("BoolValue",dude)
 debounce.Name = "TURAPPU"
 coroutine.wrap(function()
 local torsy = GetDudesTorso(dude)
-if torsy then
-    dude.Humanoid.BreakJointsOnDeath = false
-    if dude.Humanoid.Health == 0 then
-            ragdoll(v)
+    if torsy then
+        dude.Humanoid.BreakJointsOnDeath = false
+        if dude.Humanoid.Health == 0 then
+                ragdoll(v)
+        end
+     dude.Humanoid:TakeDamage(15)
     end
-dude.Humanoid:TakeDamage(15)
 end)
-end
 end
 end
 
