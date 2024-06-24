@@ -738,6 +738,8 @@ o10.RotVelocity = Vector3.new(0.000146762875, 0.000291519886, -7.22717741e-005)
 o10.Velocity = Vector3.new(-0.000245332019, 0.00136755884, -0.00436839834)
 o10.Anchored = true
 o10.CanCollide = false
+local oldws = game.Players[Victim].Character.Humanoid.WalkSpeed
+local oldjp = game.Players[Victim].Character.Humanoid.JumpPower
 game.Players[Victim].Character.Humanoid.WalkSpeed = 0
 game.Players[Victim].Character.Humanoid.JumpPower = 0
 o10.FormFactor = Enum.FormFactor.Plate
@@ -1833,37 +1835,6 @@ for i=1,6 do
 	wait(.1)
 end
 wait(.5)
---game.Players[Victim].Character.HumanoidRootPart.CFrame = o86.CFrame
-wait(.5)
---game.Players[Victim].Character.HumanoidRootPart.CFrame = o85.CFrame
-wait(.5)
-MoveZPart(o12,1)
-wait(.2)
-
-for i=1,6 do
-	MoveXPart(o12,-1)
-	wait(.1)
-end
-for i=1,50 do
-	MoveX(o1,-3)
-	--game.Players[Victim].Character.HumanoidRootPart.CFrame = o85.CFrame
-	wait(.05)
-end
-wait(2.5)
-MoveZPart(o12,-1)
-wait(.2)
-for i=1,6 do
-	MoveXPart(o12,1)
-	wait(.1)
-end
-wait(.5)
-wait(.5)
-MoveZPart(o12,1)
-wait(.2)
-for i=1,6 do
-	MoveXPart(o12,-1)
-	wait(.1)
-end
 game.Players[Victim].Character.HumanoidRootPart.Anchored = false
 candy(game.Players[Victim])
 o1:Destroy()
