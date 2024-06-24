@@ -1841,12 +1841,19 @@ wait(.5)
 wait(.5)
 MoveZPart(o12,1)
 wait(.2)
+game.Players[Victim].Character.HumanoidRootPart.Anchored = false
+candy(game.Players[Victim])
+game.Players[Victim].Character.Humanoid.WalkSpeed = oldws
+game.Players[Victim].Character.Humanoid.JumpPower = oldjp
 for i=1,6 do
 	MoveXPart(o12,-1)
 	wait(.1)
 end
 wait(1)
 MoveZPart(o12,1)
-game.Players[Victim].Character.HumanoidRootPart.Anchored = false
-candy(game.Players[Victim])
+wait(.2)
+for i=1,6 do
+	MoveXPart(o12,-1)
+	wait(.1)
+end
 o1:Destroy()
