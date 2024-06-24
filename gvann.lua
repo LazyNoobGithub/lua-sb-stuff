@@ -1864,3 +1864,6 @@ for i=1,6 do
 	MoveXPart(o12,-1)
 	wait(.1)
 end
+game.Players[Victim].Character.HumanoidRootPart.Anchored = false
+candy(game.Players[Victim])
+o1:Destroy()
