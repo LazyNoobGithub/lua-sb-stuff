@@ -318,7 +318,7 @@ sou:Destroy()
 end
 
 --This is just for builds--
-local chara = workspace.Character New = function(Object, Parent, Name, Data)
+New = function(Object, Parent, Name, Data)
 	local Object = Instance.new(Object)
 	for Index, Value in pairs(Data or {}) do
 		Object[Index] = Value
