@@ -161,6 +161,7 @@ local function ragdoll(humanoid)
 		end
 	end
 end
+printf("Ragdoll Function Loaded")
 
 Player=game:GetService("Players").LocalPlayer
 Character=Player.Character 
