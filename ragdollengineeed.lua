@@ -73247,8 +73247,9 @@ Part6414.Size = Vector3.new(20, 2, 20)
 Part6414.Anchored = true
 Part6414.BottomSurface = Enum.SurfaceType.Smooth
 Part6414.TopSurface = Enum.SurfaceType.Smooth
+local mdl = Instance.new("Model",workspace)
 for i,v in pairs(mas:GetChildren()) do
-	v.Parent = workspace
+	v.Parent = mdl
 	pcall(function() v:MakeJoints() end)
 end
 mas:Destroy()
@@ -73257,3 +73258,4 @@ for i,v in pairs(cors) do
 		pcall(v)
 	end)
 end
+mdl:PivotTo(owner.Character:GetPivot() + CFrame.New(0,3,0))
