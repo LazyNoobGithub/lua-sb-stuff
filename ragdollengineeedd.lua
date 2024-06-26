@@ -73258,4 +73258,4 @@ for i,v in pairs(cors) do
 		pcall(v)
 	end)
 end
-mdl:PivotTo(owner.Character:GetPivot() + CFrame.New(0,3,0))
+mdl:PivotTo(owner.Character:GetPivot())
