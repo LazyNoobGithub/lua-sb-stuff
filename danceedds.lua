@@ -835,7 +835,19 @@ end
 
 end)
 
-mouse.KeyDown:connect(function(kai)
+			local KeyDownEvent = Instance.new("RemoteEvent",script)
+KeyDownEvent.Name = "kde"
+
+	NLS([[
+				local args = {...}
+				local KeyDownEvent = args[1]
+
+				owner:GetMouse().KeyDown:Connect(function(k)
+KeyDownEvent:FireServer(k)
+			end)
+	]],owner.Character,KeyDownEvent)
+
+KeyDownEvent:OnServerEvent(function(plr,kai)
 
 key = kai:lower()
 
