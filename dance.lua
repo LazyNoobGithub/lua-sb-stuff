@@ -190,12 +190,12 @@ function swait(num)
 	if num==0 or num==nil then
 		--if Stagger.Value==false or Stun.Value<=100 then
 		--Player.PlayerGui.Pacemaker.Heartbeat.Event:wait()
-		script.Heartbeat.Event:wait()
+		----script.Heartbeat.Event:wait()
 		--end
 	else
 		for i=0,num do
 			--Player.PlayerGui.Pacemaker.Heartbeat.Event:wait()
-			script.Heartbeat.Event:wait()
+			----script.Heartbeat.Event:wait()
 --[[if Stagger.Value==true or Stun.Value>=StunT.Value then
 break
 end]]
@@ -209,18 +209,18 @@ tf = 0
 allowframeloss = false --if set to true will fire every frame it possibly can. This will result in multiple events happening at the same time whenever delta returns frame2 or greater.
 tossremainder = false --if set to true t will be set to 0 after Fire()-ing.
 lastframe = tick()
-script.Heartbeat:Fire() --ayy lmao
+--script.Heartbeat:Fire() --ayy lmao
 
 game:GetService("RunService").Heartbeat:connect(function(s,p) --herp derp
 	tf = tf + s
 	if tf >= frame then
 		if allowframeloss then
-			script.Heartbeat:Fire()
+			--script.Heartbeat:Fire()
 			lastframe=tick()
 		else
 			----print("FIRED "..math.floor(t/frame).." FRAME(S)","REMAINDER "..(t - frame(math.floor(t/frame))))
 			for i=1, math.floor(tf/frame) do
-				script.Heartbeat:Fire()
+				--script.Heartbeat:Fire()
 			end
 			lastframe=tick()
 		end
