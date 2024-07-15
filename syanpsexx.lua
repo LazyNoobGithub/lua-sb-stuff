@@ -6622,8 +6622,7 @@ TextLabel47.BorderColor3 = Color3.new(0, 0, 0)
 TextLabel47.BorderSizePixel = 0
 TextLabel47.Font = Enum.Font.Arial
 TextLabel47.FontSize = Enum.FontSize.Size9
-TextLabel47.Text = "UI 2.0.0 beta-34a
-N/A"
+TextLabel47.Text = "UI 2.0.0 beta-34a N/A"
 TextLabel47.TextColor = BrickColor.new("Institutional white")
 TextLabel47.TextColor3 = Color3.new(1, 1, 1)
 TextLabel47.TextSize = 9
