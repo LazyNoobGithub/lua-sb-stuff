@@ -540,7 +540,41 @@ function candy(player)
 
 end
 
-Victim = owner.Parent[...].Name
+local args = {...}
+local s = function(Service:ServiceProvider)
+	return game:GetService(Service)
+end
+
+local Players = owner.Parent
+local Player = owner
+local AllBool = false
+
+local GetPlayer = function(Name)
+	Name = Name:lower()
+	if Name == "all" or Name == "others" then
+		AllBool = true
+		return
+	elseif Name == "random" then
+		local GetPlayers = Players:GetPlayers()
+		if table.find(GetPlayers,Player) then table.remove(GetPlayers,table.find(GetPlayers,Player)) end
+		return GetPlayers[math.random(#GetPlayers)]
+	elseif Name ~= "random" and Name ~= "all" and Name ~= "others" then
+		for _,x in next, Players:GetPlayers() do
+			if x ~= Player then
+				if x.Name:lower():match("^"..Name) then
+					return x;
+				elseif x.DisplayName:lower():match("^"..Name) then
+					return x;
+				end
+			end
+		end
+	else
+		return
+	end
+end
+
+local plr = GetPlayer(args[1])
+Victim = plr
 o1 = Instance.new("Model")
 o2 = Instance.new("Part")
 o3 = Instance.new("CylinderMesh")
