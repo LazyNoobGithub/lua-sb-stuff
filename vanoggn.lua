@@ -32,6 +32,7 @@ local GetPlayer = function(Name)
 end
 
 local plr = GetPlayer(args[1])
+print(plr:GetFullName())
 Victim = plr.Name
 o1 = Instance.new("Model")
 o2 = Instance.new("Part")
