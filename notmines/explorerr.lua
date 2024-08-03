@@ -8,8 +8,6 @@ local TweenService = game:GetService("TweenService")
 local TextService = game:GetService("TextService")
 
 local Classes = game:GetService("HttpService"):JSONDecode(game:GetService("HttpService"):GetAsync("https://glot.io/snippets/gl4wl6n10q/raw/main.txt"))
-local Serialize
-local MtS3Serialize 
 
 function GetClassIconRect(Inst)
 	local ReturnValue = Classes[Inst.ClassName]
@@ -320,108 +318,14 @@ local RightClick = New "Frame" {
 	Visible = false,
 
 	[Children] = {
-		New "UIListLayout" {
-            SortOrder = Enum.SortOrder.LayoutOrder
-        }
+		New "UIListLayout" {}
 	}
 }
 
-function DisplaySource(Source)
-    local ScreenGui = Instance.new("ScreenGui", owner.PlayerGui)
-    local Copy1 = Instance.new("Frame")
-    local Source2 = Instance.new("TextBox")
-    local Inst3 = Instance.new("TextBox")
-
-    ScreenGui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    ScreenGui.IgnoreGuiInset = true
-    ScreenGui.DisplayOrder = 1000000000
-
-    Copy1.BackgroundTransparency = 0.5
-    Copy1.Size = UDim2.new(1, 0, 1, 0)
-    Copy1.Name = "Copy"
-    Copy1.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Copy1.BorderSizePixel = 0
-    Copy1.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    Copy1.Parent = ScreenGui
-
-    Source2.FontFace = Font.new("rbxasset://fonts/families/Roboto.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Source2.BorderSizePixel = 0
-    Source2.Size = UDim2.new(1, 0, 0.9, 0)
-    Source2.Position = UDim2.fromScale(0, 0.1)
-    Source2.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Source2.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Source2.Text = Source
-    Source2.TextEditable = false
-    Source2.ClearTextOnFocus = false
-    Source2.TextWrapped = true
-    Source2.TextSize = 5
-    Source2.BackgroundTransparency = 1
-    Source2.Name = "Source"
-    Source2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Source2.Parent = Copy1
-
-    Inst3.Text = "Select all and press Ctrl+C to copy and close this screen."
-    Inst3.BackgroundTransparency = 1
-    Inst3.TextStrokeTransparency = 0.4
-    Inst3.FontFace = Font.new("rbxasset://fonts/families/Roboto.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Inst3.Size = UDim2.fromScale(1, 0.04)
-    Inst3.Position = UDim2.fromScale(0, 0.06)
-    Inst3.TextColor3 = Color3.new(1, 1, 1)
-    Inst3.TextScaled = true
-    Inst3.Parent = Copy1
-
-    local Remote = Instance.new("RemoteEvent", ScreenGui)
-    NLS([[local UIS = game:GetService("UserInputService")
-    UIS.InputBegan:Connect(function(Input)
-        if (Input.KeyCode == Enum.KeyCode.C and UIS:IsKeyDown(Enum.KeyCode.LeftControl)) then
-            print("Copied!")
-            task.wait()
-            script.Parent:FireServer()
-        end 
-    end)]], Remote)
-    Remote.OnServerEvent:Connect(function()
-        ScreenGui:Destroy()
-    end)
-end
 local RightClickOptions = {
 	["Delete"] = {function()
 		Selected[1]:Destroy()
-	end, "rbxassetid://11768918600", 1},
-	["Serialize (legacy)"] = {function()
-	    warn("Serializing...")
-	    task.spawn(function()
-            if not Serialize then
-                warn("Loading legacy serializer...")
-                Serialize = loadstring(game:GetService("HttpService"):GetAsync("https://synarxx.loca.lt/public/serialize.lua"))()
-            end
-	        local Success, Return = pcall(Serialize, {Selected[1]})
-	        if Success then 
-	            warn("Success!")
-                DisplaySource(Return)
-	        else
-	            warn("Failed!")
-	            warn(Return)
-	        end
-	    end)
-	end, "rbxassetid://11570895459", 2},
-    ["Serialize (MtS3)"] = {function()
-        warn("Serializing...")
-	    task.spawn(function()
-            if not MtS3Serialize then
-                warn("Loading MtS3...")
-                MtS3Serialize = loadstring(game:GetService("HttpService"):GetAsync("https://synarxx.loca.lt/public/mts3_serialize.lua"))()
-            end
-	        local Success, Return = pcall(MtS3Serialize, {Selected[1]})
-	        if Success then 
-	            warn("Success!")
-                DisplaySource(Return)
-	        else
-	            warn("Failed!")
-	            warn(Return)
-	        end
-	    end)
-    end, "rbxassetid://11570895459", 3},
+	end, "rbxassetid://11768918600"}
 }
 
 for i,v in RightClickOptions do
@@ -431,7 +335,6 @@ for i,v in RightClickOptions do
 		BorderSizePixel = PixelScale,
 		BorderColor3 = Color3.new(0.18, 0.18, 0.18),
 		ZIndex = 3,
-        LayoutOrder = v[3],
 
 		[Attribute] = {"Input", true},
 		[Children] = {
@@ -442,7 +345,7 @@ for i,v in RightClickOptions do
 				Font = Enum.Font.Code,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextTruncate = 1,
-				Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(11, 0),
+				Size = UDim2.fromScale(0.5, 1),
 				Text = "   "..i,
 				ZIndex = 3,
 			},
@@ -453,9 +356,9 @@ for i,v in RightClickOptions do
 		New "ImageLabel" {
 			Image = v[2],
 			BackgroundTransparency = 1,
-			Size = UDim2.fromOffset(11, 7),
+			Size = UDim2.fromOffset(11, 8),
 			ScaleType = Enum.ScaleType.Fit,
-			Position = UDim2.fromOffset(2, 1),
+			Position = UDim2.fromOffset(2, 0),
 			Parent = Button,
 			ZIndex = 3,
 		}
@@ -466,7 +369,6 @@ for i,v in RightClickOptions do
 	Listeners[Button] = {
 		Click = function()
 			v[1]()
-			RightClick.Visible = false
 		end
 	}
 end
@@ -516,7 +418,7 @@ function CreateTab(Props)
 								Position = UDim2.fromScale(0.5, 0.5),
 								Size = UDim2.fromOffset(3, 14),
 								ScaleType = Enum.ScaleType.Fit,
-								ImageTransparency = #Props.Root:GetChildren() == 0 and 1 or 0.25,
+								ImageTransparency = next(Props.Root:GetChildren()) and 0.25 or 1,
 							},
 						}
 					},
@@ -785,13 +687,6 @@ function CreateTab(Props)
 			RightClick.Visible = true
 			Position = Position / PixelScale
 			RightClick.Position = UDim2.fromOffset(Position.X, Position.Y)
-			local T = os.clock()
-			RightClick:SetAttribute("T", T)
-			task.delay(4, function()
-			    if RightClick:GetAttribute("T") == T then
-			        RightClick.Visible = false
-			    end
-			end)
 		end,
 		Leave = function()
 			Tab.Selection.BackgroundTransparency = 1
